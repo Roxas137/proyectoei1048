@@ -9,6 +9,10 @@ import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 
 public class E2ECondicionesCoordenadas extends E2ETestBed {
+
+    /**
+     * Comprobar que funciona cuando las coordenadas no son validas
+     */
     @Test
     public void coorValid() {
         // Given:   una coordenadas
@@ -24,6 +28,10 @@ public class E2ECondicionesCoordenadas extends E2ETestBed {
         assertNotNull(condicionesCiudad);
     }
 
+
+    /**
+     * Comprobar que salta la excepcion correspondiente cuando las coordenadas no son validas
+     */
     @Test(expected = InvalidCoordenatesException.class)
     public void coorInvalid() {
         // Given:   una coordenadas

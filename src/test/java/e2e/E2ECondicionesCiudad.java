@@ -9,6 +9,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class E2ECondicionesCiudad extends E2ETestBed {
+
     @Test
     public void cityValid() {
         // Given:   una ciudad (String)

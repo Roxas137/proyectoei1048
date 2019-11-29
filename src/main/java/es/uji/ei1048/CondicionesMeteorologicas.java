@@ -7,6 +7,13 @@ public class CondicionesMeteorologicas {
     private double velViento;
     private String dirViento;
 
+    public CondicionesMeteorologicas() {
+        this.temperatura = 0;
+        this.estadoClima = "";
+        this.velViento = 0;
+        this.dirViento = "";
+    }
+
     public double getTemperatura() {
         return temperatura;
     }
@@ -49,8 +56,6 @@ public class CondicionesMeteorologicas {
         return  this.temperatura == copyOther.getTemperatura() &&
                 this.estadoClima.equals(copyOther.getEstadoClima()) &&
                 this.dirViento.equals(copyOther.getDirViento()) &&
-                this.velViento == copyOther.getVelViento()
-                ;
-
+                this.velViento == copyOther.getVelViento();
     }
 }
