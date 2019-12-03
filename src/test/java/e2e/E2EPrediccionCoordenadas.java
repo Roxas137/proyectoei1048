@@ -46,28 +46,28 @@ public class E2EPrediccionCoordenadas extends E2ETestBed{
         String ciudad = "";
 
         // When:    la ciudad no existe
-        CondicionesMeteorologicas condicionesCiudad = weatherApp.getCondicionesActuales(ciudad);
+        List<CondicionesMeteorologicas> condicionesCiudad = weatherApp.getPrediccion(ciudad);
 
         // Then:    espero que se lance una excepcion
 
     }
-
-    /**
-     * Comprobar que salta la excepcion correspondiente cuando la fecha no es valida
-     */
-    @Test(expected = InvalidDateException.class)
-    public void dateInvalid() {
-        // Given:   una ciudad valida (String)
-        String ciudad = "";
-
-        // Given:   una fecha y hora invalida para la prediccion (Fecha pasada)
-        Calendar fecha = GregorianCalendar.getInstance();
-        fecha.add(Calendar.DAY_OF_MONTH, -3);
-        fecha.set(Calendar.HOUR_OF_DAY, 16);
-
-        // When:    la ciudad no existe
-        CondicionesMeteorologicas condicionesCiudad = weatherApp.getCondicionesActuales(ciudad);
-
-        // Then:    espero que se lance una excepcion
-    }
+//
+//    /**
+//     * Comprobar que salta la excepcion correspondiente cuando la fecha no es valida
+//     */
+//    @Test(expected = InvalidDateException.class)
+//    public void dateInvalid() {
+//        // Given:   una ciudad valida (String)
+//        String ciudad = "";
+//
+//        // Given:   una fecha y hora invalida para la prediccion (Fecha pasada)
+//        Calendar fecha = GregorianCalendar.getInstance();
+//        fecha.add(Calendar.DAY_OF_MONTH, -3);
+//        fecha.set(Calendar.HOUR_OF_DAY, 16);
+//
+//        // When:    la ciudad no existe
+//        List<CondicionesMeteorologicas> condicionesCiudad = weatherApp.getPrediccion(ciudad);
+//
+//        // Then:    espero que se lance una excepcion
+//    }
 }

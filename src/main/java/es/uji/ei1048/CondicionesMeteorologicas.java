@@ -2,24 +2,33 @@ package es.uji.ei1048;
 
 public class CondicionesMeteorologicas {
 
-    private double temperatura;
+    private double temperaturaMax;
+    private double temperaturaMin;
     private String estadoClima;
     private double velViento;
     private String dirViento;
 
     public CondicionesMeteorologicas() {
-        this.temperatura = 0;
+        this.temperaturaMax = 0;
         this.estadoClima = "";
         this.velViento = 0;
         this.dirViento = "";
     }
 
-    public double getTemperatura() {
-        return temperatura;
+    public double getTemperaturaMax() {
+        return temperaturaMax;
     }
 
-    public void setTemperatura(double temperatura) {
-        this.temperatura = temperatura;
+    public void setTemperaturaMax(double temperaturaMax) {
+        this.temperaturaMax = temperaturaMax;
+    }
+
+    public double getTemperaturaMin() {
+        return temperaturaMin;
+    }
+
+    public void setTemperaturaMin(double temperaturaMin) {
+        this.temperaturaMin = temperaturaMin;
     }
 
     public String getEstadoClima() {
@@ -53,7 +62,8 @@ public class CondicionesMeteorologicas {
         if (!(other instanceof CondicionesMeteorologicas))
             return false;
         CondicionesMeteorologicas copyOther = (CondicionesMeteorologicas) other;
-        return  this.temperatura == copyOther.getTemperatura() &&
+        return  this.temperaturaMax == copyOther.getTemperaturaMax() &&
+                this.temperaturaMin == copyOther.getTemperaturaMin() &&
                 this.estadoClima.equals(copyOther.getEstadoClima()) &&
                 this.dirViento.equals(copyOther.getDirViento()) &&
                 this.velViento == copyOther.getVelViento();
