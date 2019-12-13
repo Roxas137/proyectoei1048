@@ -3,7 +3,6 @@ package es.uji.ei1048;
 import es.uji.ei1048.exceptions.InvalidCityException;
 import es.uji.ei1048.exceptions.InvalidCoordenatesException;
 import es.uji.ei1048.exceptions.InvalidDateException;
-import static es.uji.ei1048.utils.Constants.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Calendar;
@@ -57,8 +56,7 @@ public class WeatherAppFacade implements IWeatherAppFacade {
     }
 
     private void checkCoordenates(Coordenadas coord) throws InvalidCoordenatesException {
-        if (coord.getLatitud() < LATITUD_MINIMA || coord.getLatitud() > LATITUD_MAXIMA ||
-            coord.getLongitud() < LONGITUD_MINIMA || coord.getLongitud() > LONGITUD_MAXIMA) {
+        if (!(coord.isValid())) {
             throw new InvalidCoordenatesException();
         }
     }

@@ -1,5 +1,7 @@
 package es.uji.ei1048;
 
+import java.util.Calendar;
+
 public class CondicionesMeteorologicas {
 
     private double temperaturaMax;
@@ -7,12 +9,34 @@ public class CondicionesMeteorologicas {
     private String estadoClima;
     private double velViento;
     private String dirViento;
+    private Calendar fechaCondiciones;
+
+    public Calendar getFechaCondiciones() {
+        return fechaCondiciones;
+    }
+
+    public void setFechaCondiciones(Calendar fechaCondiciones) {
+        this.fechaCondiciones = fechaCondiciones;
+    }
+
+    public Calendar getFechaPeticion() {
+        return fechaPeticion;
+    }
+
+    public void setFechaPeticion(Calendar fechaPeticion) {
+        this.fechaPeticion = fechaPeticion;
+    }
+
+    private transient Calendar fechaPeticion;
+
 
     public CondicionesMeteorologicas() {
         this.temperaturaMax = 0;
         this.estadoClima = "";
         this.velViento = 0;
         this.dirViento = "";
+        fechaCondiciones = Calendar.getInstance();
+        fechaPeticion = Calendar.getInstance();
     }
 
     public double getTemperaturaMax() {
@@ -66,6 +90,7 @@ public class CondicionesMeteorologicas {
                 this.temperaturaMin == copyOther.getTemperaturaMin() &&
                 this.estadoClima.equals(copyOther.getEstadoClima()) &&
                 this.dirViento.equals(copyOther.getDirViento()) &&
-                this.velViento == copyOther.getVelViento();
+                this.velViento == copyOther.getVelViento() &&
+                fechaCondiciones.equals(copyOther.getFechaCondiciones());
     }
 }

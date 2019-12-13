@@ -1,5 +1,7 @@
 package es.uji.ei1048;
 
+import static es.uji.ei1048.utils.Constants.*;
+
 public class Coordenadas {
     private double latitud;
     private double longitud;
@@ -28,5 +30,10 @@ public class Coordenadas {
 
     public void setLongitud(double longitud) {
         this.longitud = longitud;
+    }
+
+    public boolean isValid() {
+        return !(latitud < LATITUD_MINIMA || latitud > LATITUD_MAXIMA ||
+                longitud < LONGITUD_MINIMA || longitud > LONGITUD_MAXIMA);
     }
 }
