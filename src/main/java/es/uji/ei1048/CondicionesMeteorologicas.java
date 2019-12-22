@@ -10,6 +10,8 @@ public class CondicionesMeteorologicas {
     private double velViento;
     private String dirViento;
     private Calendar fechaCondiciones;
+    private transient Calendar fechaPeticion;
+
 
     public Calendar getFechaCondiciones() {
         return fechaCondiciones;
@@ -26,8 +28,6 @@ public class CondicionesMeteorologicas {
     public void setFechaPeticion(Calendar fechaPeticion) {
         this.fechaPeticion = fechaPeticion;
     }
-
-    private transient Calendar fechaPeticion;
 
 
     public CondicionesMeteorologicas() {

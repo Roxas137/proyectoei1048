@@ -10,6 +10,8 @@ import java.util.List;
 
 public class WeatherAppFacade implements IWeatherAppFacade {
 
+    OpenWeatherApp openWeatherApp;
+
     public WeatherAppFacade() {
         // Circulen, nada que ver aqui
     }
