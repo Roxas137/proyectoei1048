@@ -10,10 +10,15 @@ import java.util.List;
 
 public class WeatherAppFacade implements IWeatherAppFacade {
 
-    OpenWeatherApp openWeatherApp;
+    WeatherApp weatherApp;
 
     public WeatherAppFacade() {
-        // Circulen, nada que ver aqui
+        weatherApp = new WeatherApp();
+    }
+
+    // Ni siquiera se si sera necesario
+    public void connect() {
+
     }
 
     @Override
