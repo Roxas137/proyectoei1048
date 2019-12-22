@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class OpenWeatherMap implements IWeatherService {
@@ -18,18 +19,19 @@ public class OpenWeatherMap implements IWeatherService {
     }
 
     // TODO hay que hacer cambios, la apicall no es la misma si es el tiempo actual que si es una prediccion
-    public void getWeather(OpenWeatherMapType type, String lugar, String days) throws IOException {
+    public void getWeather(int typePetition, OpenWeatherMapTypeId typeId, String[] place, String days) throws IOException {
         // TODO Sin probar, no se si funcionara
-        URL urlForGetRequest = new URL(Constants.APICALL);
+        URL url = getUrl(typePetition);
+
+
         String readLine = "";
-        HttpURLConnection conection = (HttpURLConnection) urlForGetRequest.openConnection();
+        HttpURLConnection conection = (HttpURLConnection) url.openConnection();  // No hay situacion de NullPointerException porque se trabaja con constantes ya conocidas y sin margen de error
         conection.setRequestMethod("GET");
-        conection.setRequestProperty(type.toString(), lugar);
-        conection.setRequestProperty("[PH]", days); // Cambiar
+        setRequestProperties(conection, typeId, place);
         int responseCode = conection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()));
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while ((readLine = in.readLine()) != null) {
                 response.append(readLine);
             }
@@ -40,21 +42,41 @@ public class OpenWeatherMap implements IWeatherService {
         } else {
             System.out.println("GET NOT WORKED");
         }
-
     }
 
-    private String getType(OpenWeatherMapType type) {
-        String param = "";
-        switch (type) {
-            case ID:
+    private URL getUrl(int typePetition) {
+        try {
+            if (typePetition == Constants.PETITION_PREDICTION) {
+                return new URL(Constants.APICALL + Constants.PREDICTION);
+            }
+            return new URL(Constants.APICALL + Constants.CURRENT);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    private void setRequestProperties(HttpURLConnection conection, OpenWeatherMapTypeId type, String[] place) {
+        setApiKey(conection);
+        setPlace(conection, type, place);
+    }
+
+    private void setApiKey(HttpURLConnection conection) {
+        conection.setRequestProperty("APPID", Constants.APIKEY);
+    }
+
+    private void setPlace(HttpURLConnection conection, OpenWeatherMapTypeId type, String[] place) {
+        switch (type) {
+            case COORDENATES:
+                conection.setRequestProperty(type.getName()[0], place[0]);
+                conection.setRequestProperty(type.getName()[1], place[1]);
                 break;
             case NAME:
-
+                conection.setRequestProperty(type.getName()[0], place[0]);
                 break;
-            case COORDENATES:
+            case ID:
+                conection.setRequestProperty(type.getName()[0], place[0]);
                 break;
         }
-        return param;
     }
 }
