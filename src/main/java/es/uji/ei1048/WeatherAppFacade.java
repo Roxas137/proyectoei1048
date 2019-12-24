@@ -3,6 +3,7 @@ package es.uji.ei1048;
 import es.uji.ei1048.exceptions.InvalidCityException;
 import es.uji.ei1048.exceptions.InvalidCoordenatesException;
 import es.uji.ei1048.exceptions.InvalidDateException;
+import es.uji.ei1048.utils.Unit;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Calendar;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class WeatherAppFacade implements IWeatherAppFacade {
 
-    WeatherApp weatherApp;
+    private WeatherApp weatherApp;
 
     public WeatherAppFacade() {
         weatherApp = new WeatherApp();
@@ -23,20 +24,15 @@ public class WeatherAppFacade implements IWeatherAppFacade {
 
     @Override
     public CondicionesMeteorologicas getCondicionesActuales(String ciudad) throws InvalidCityException {
-        // Comprobar ciudad valida
         checkCity(ciudad);
-
-        //TODO
-        throw new NotImplementedException();
+        return weatherApp.getCurrentWeather(OpenWeatherMapTypeId.NAME, new String[]{ciudad}, Unit.CELSIUS);  // Por defecto he puesto celsius
     }
 
     @Override
     public CondicionesMeteorologicas getCondicionesActuales(Coordenadas coord) throws InvalidCoordenatesException {
         // Comprobar ciudad valida
         checkCoordenates(coord);
-
-        //TODO
-        throw new NotImplementedException();
+        return weatherApp.getCurrentWeather(OpenWeatherMapTypeId.COORDENATES, new String[]{String.valueOf(coord.getLatitud()), String.valueOf(coord.getLongitud())}, Unit.CELSIUS);
     }
 
     @Override

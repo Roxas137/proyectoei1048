@@ -1,5 +1,7 @@
 package es.uji.ei1048;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import es.uji.ei1048.utils.Constants;
 import es.uji.ei1048.utils.Unit;
 
@@ -12,22 +14,15 @@ import java.net.URL;
 
 public class OpenWeatherMap implements IWeatherService {
     private String jsonResult;
-    private Unit unit;
 
-    public void setUnit(Unit unit) {
-        this.unit = unit;
-    }
-
-    // TODO hay que hacer cambios, la apicall no es la misma si es el tiempo actual que si es una prediccion
-    public void getWeather(int typePetition, OpenWeatherMapTypeId typeId, String[] place, String days) throws IOException {
-        // TODO Sin probar, no se si funcionara
+    public String getWeather(int typePetition, OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException {
         URL url = getUrl(typePetition);
-
-
+        Gson g = new Gson();
+        JsonObject j = new JsonObject();
         String readLine = "";
-        HttpURLConnection conection = (HttpURLConnection) url.openConnection();  // No hay situacion de NullPointerException porque se trabaja con constantes ya conocidas y sin margen de error
+        HttpURLConnection conection = (HttpURLConnection) url.openConnection();
         conection.setRequestMethod("GET");
-        setRequestProperties(conection, typeId, place);
+        setRequestProperties(conection, typeId, place, unit);
         int responseCode = conection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()));
@@ -36,11 +31,11 @@ public class OpenWeatherMap implements IWeatherService {
                 response.append(readLine);
             }
             in.close();
-            // print result
-            System.out.println("JSON String Result " + response.toString());
-            //GetAndPost.POSTRequest(response.toString());
+
+            return response.toString();
         } else {
             System.out.println("GET NOT WORKED");
+            return null;
         }
     }
 
@@ -56,9 +51,10 @@ public class OpenWeatherMap implements IWeatherService {
         return null;
     }
 
-    private void setRequestProperties(HttpURLConnection conection, OpenWeatherMapTypeId type, String[] place) {
+    private void setRequestProperties(HttpURLConnection conection, OpenWeatherMapTypeId type, String[] place, Unit unit) {
         setApiKey(conection);
         setPlace(conection, type, place);
+        setUnit(conection, unit);
     }
 
     private void setApiKey(HttpURLConnection conection) {
@@ -78,5 +74,10 @@ public class OpenWeatherMap implements IWeatherService {
                 conection.setRequestProperty(type.getName()[0], place[0]);
                 break;
         }
+    }
+
+    private void setUnit(HttpURLConnection conection, Unit unit) {
+        // TODO Con kelvin no se si fallaria o no
+        conection.setRequestProperty("units", unit.getName());
     }
 }
