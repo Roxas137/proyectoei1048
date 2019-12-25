@@ -8,5 +8,6 @@ import java.io.IOException;
  *
  */
 public interface IWeatherService {
-    String getWeather(int typePetition, OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException;
+    String getCurrentWeather() throws IOException;
+    String getPredictionWeather() throws IOException;
 }

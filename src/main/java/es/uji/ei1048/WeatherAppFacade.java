@@ -12,27 +12,23 @@ import java.util.List;
 public class WeatherAppFacade implements IWeatherAppFacade {
 
     private WeatherApp weatherApp;
+    private IWeatherService service;
 
     public WeatherAppFacade() {
         weatherApp = new WeatherApp();
     }
 
-    // Ni siquiera se si sera necesario
-    public void connect() {
-
-    }
-
     @Override
     public CondicionesMeteorologicas getCondicionesActuales(String ciudad) throws InvalidCityException {
         checkCity(ciudad);
-        return weatherApp.getCurrentWeather(OpenWeatherMapTypeId.NAME, new String[]{ciudad}, Unit.CELSIUS);  // Por defecto he puesto celsius
+        return weatherApp.getCurrentWeather(service);
     }
 
     @Override
     public CondicionesMeteorologicas getCondicionesActuales(Coordenadas coord) throws InvalidCoordenatesException {
         // Comprobar ciudad valida
         checkCoordenates(coord);
-        return weatherApp.getCurrentWeather(OpenWeatherMapTypeId.COORDENATES, new String[]{String.valueOf(coord.getLatitud()), String.valueOf(coord.getLongitud())}, Unit.CELSIUS);
+        return weatherApp.getCurrentWeather(service);
     }
 
     @Override

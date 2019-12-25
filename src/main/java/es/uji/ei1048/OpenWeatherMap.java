@@ -1,7 +1,5 @@
 package es.uji.ei1048;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import es.uji.ei1048.utils.Constants;
 import es.uji.ei1048.utils.Unit;
 
@@ -13,16 +11,25 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class OpenWeatherMap implements IWeatherService {
-    private String jsonResult;
 
-    public String getWeather(int typePetition, OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException {
-        URL url = getUrl(typePetition);
-        Gson g = new Gson();
-        JsonObject j = new JsonObject();
+    public String getCurrentWeather() throws IOException {
+        // Parametros por defecto para que no de errores
+        // TODO Coger los parametros por JavaFX
+        OpenWeatherMapTypeId typeId = OpenWeatherMapTypeId.ID;
+        String[] place = new String[]{"512052"};
+        Unit unit = Unit.CELSIUS;
+
+        return getCurrentWeather(typeId, place, unit);
+    }
+
+    private String getCurrentWeather(OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException {
+        URL url = getUrl(Constants.PETITION_CURRENT);
         String readLine = "";
+
         HttpURLConnection conection = (HttpURLConnection) url.openConnection();
         conection.setRequestMethod("GET");
         setRequestProperties(conection, typeId, place, unit);
+
         int responseCode = conection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()));
@@ -39,16 +46,47 @@ public class OpenWeatherMap implements IWeatherService {
         }
     }
 
-    private URL getUrl(int typePetition) {
-        try {
-            if (typePetition == Constants.PETITION_PREDICTION) {
-                return new URL(Constants.APICALL + Constants.PREDICTION);
+    @Override
+    public String getPredictionWeather() throws IOException {
+        // Parametros por defecto para que no de errores
+        // TODO Coger los parametros por JavaFX
+        OpenWeatherMapTypeId typeId = OpenWeatherMapTypeId.ID;
+        String[] place = new String[]{"512052"};
+        Unit unit = Unit.CELSIUS;
+
+        return getPredictionWeather(typeId, place, unit);
+    }
+
+    private String getPredictionWeather(OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException {
+        URL url = getUrl(Constants.PETITION_PREDICTION);
+        String readLine = "";
+
+        HttpURLConnection conection = (HttpURLConnection) url.openConnection();
+        conection.setRequestMethod("GET");
+        setRequestProperties(conection, typeId, place, unit);
+
+        int responseCode = conection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            while ((readLine = in.readLine()) != null) {
+                response.append(readLine);
             }
-            return new URL(Constants.APICALL + Constants.CURRENT);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            in.close();
+
+            return response.toString();
+        } else {
+            System.out.println("GET NOT WORKED");
+            return null;
         }
-        return null;
+    }
+
+    private URL getUrl(int typePetition) throws MalformedURLException {
+        if (typePetition == Constants.PETITION_PREDICTION) {
+            return new URL(Constants.APICALL + Constants.PREDICTION);
+        }
+        return new URL(Constants.APICALL + Constants.CURRENT);
+
     }
 
     private void setRequestProperties(HttpURLConnection conection, OpenWeatherMapTypeId type, String[] place, Unit unit) {
