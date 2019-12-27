@@ -12,6 +12,7 @@ import java.net.URL;
 
 public class OpenWeatherMap implements IWeatherService {
 
+    @Override
     public String getCurrentWeather() throws IOException {
         // Parametros por defecto para que no de errores
         // TODO Coger los parametros por JavaFX

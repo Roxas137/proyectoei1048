@@ -1,8 +1,12 @@
 package es.uji.ei1048;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.List;
 
 public class WeatherApp {
 
@@ -14,24 +18,42 @@ public class WeatherApp {
 
         try {
             String jsonResult = service.getCurrentWeather();
-            // TODO convertir a CondicionesMetereologicas
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            CondicionesMeteorologicas condiciones = gson.fromJson(jsonResult, CondicionesMeteorologicas.class);
+            setPetitionData(condiciones);
             // TODO actualizar la BBDD
+            return condiciones;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        throw new NotImplementedException();
+        return null;
     }
 
-    public CondicionesMeteorologicas getPredictionWeather(IWeatherService service) {
+    public List<CondicionesMeteorologicas> getPredictionWeather(IWeatherService service) {
         // TODO mirar en la BBDD
 
         try {
             String jsonResult = service.getPredictionWeather();
-            // TODO convertir a CondicionesMetereologicas
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            List<CondicionesMeteorologicas> condiciones = gson.fromJson(jsonResult, new TypeToken<List<CondicionesMeteorologicas>>(){}.getType());
+            setPetitionDate(condiciones);
+            // TODO: 27/12/2019 Convertir a una unica prediccion por dia
             // TODO actualizar la BBDD
+
+            return condiciones;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        throw new NotImplementedException();
+        return null;
+    }
+
+    private void setPetitionDate(List<CondicionesMeteorologicas> condiciones) {
+        for (CondicionesMeteorologicas condicion : condiciones) {
+            setPetitionData(condicion);
+        }
+    }
+
+    private void setPetitionData(CondicionesMeteorologicas condicion) {
+        condicion.setFechaPeticion(Calendar.getInstance());
     }
 }

@@ -1,11 +1,14 @@
 package es.uji.ei1048;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import es.uji.ei1048.exceptions.InvalidCityException;
 import es.uji.ei1048.exceptions.InvalidCoordenatesException;
 import es.uji.ei1048.exceptions.InvalidDateException;
 import es.uji.ei1048.utils.Unit;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
@@ -21,6 +24,15 @@ public class WeatherAppFacade implements IWeatherAppFacade {
     @Override
     public CondicionesMeteorologicas getCondicionesActuales(String ciudad) throws InvalidCityException {
         checkCity(ciudad);
+
+        // TODO: 27/12/2019 Usado para debug, borrar
+        CondicionesMeteorologicas condicionesMeteorologicas = weatherApp.getCurrentWeather(service);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //String jsonResult = gson.toJson(condicionesMeteorologicas);
+        File file = new File("\"C:\\Users\\Guillermo\\IdeaProjects\\proyectoei1048\"");
+        System.out.println(file.getAbsolutePath());
+
+
         return weatherApp.getCurrentWeather(service);
     }
 
@@ -51,7 +63,7 @@ public class WeatherAppFacade implements IWeatherAppFacade {
 
 
     private void checkCity(String city) throws InvalidCityException {
-        //TODO
+        // TODO
     }
 
     private void checkCoordenates(Coordenadas coord) throws InvalidCoordenatesException {

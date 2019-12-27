@@ -81,6 +81,8 @@ public class CondicionesMeteorologicas {
 
     @Override
     public boolean equals(Object other) {
+        if (other == null)
+            return false;
         if (this == other)
             return true;
         if (!(other instanceof CondicionesMeteorologicas))
