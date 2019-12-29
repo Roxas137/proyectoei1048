@@ -17,22 +17,27 @@ public class WeatherAppFacade implements IWeatherAppFacade {
     private WeatherApp weatherApp;
     private IWeatherService service;
 
-    public WeatherAppFacade() {
+    public WeatherAppFacade(IWeatherService service) {
         weatherApp = new WeatherApp();
+        this.service = service;
+    }
+
+    @Override
+    public CondicionesMeteorologicas getCondicionesActuales() {
+
+        // TODO: 27/12/2019 Usado para debug, borrar
+        CondicionesMeteorologicas condicionesMeteorologicas = weatherApp.getCurrentWeather(service);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonResult = gson.toJson(condicionesMeteorologicas);
+        File file = new File("\"C:\\Users\\Guillermo\\IdeaProjects\\proyectoei1048\"");
+        System.out.println(file.getAbsolutePath());
+        System.out.println(jsonResult);
+        return condicionesMeteorologicas;
     }
 
     @Override
     public CondicionesMeteorologicas getCondicionesActuales(String ciudad) throws InvalidCityException {
         checkCity(ciudad);
-
-        // TODO: 27/12/2019 Usado para debug, borrar
-        CondicionesMeteorologicas condicionesMeteorologicas = weatherApp.getCurrentWeather(service);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        //String jsonResult = gson.toJson(condicionesMeteorologicas);
-        File file = new File("\"C:\\Users\\Guillermo\\IdeaProjects\\proyectoei1048\"");
-        System.out.println(file.getAbsolutePath());
-
-
         return weatherApp.getCurrentWeather(service);
     }
 

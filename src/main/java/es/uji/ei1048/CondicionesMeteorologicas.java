@@ -1,17 +1,66 @@
 package es.uji.ei1048;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Calendar;
 
 public class CondicionesMeteorologicas {
 
-    private double temperaturaMax;
+    @SerializedName("temp")
+    private double temperaturaActual;
+
+    @SerializedName("feels_like")
+    private double sensacionTermica;
+
+    @SerializedName("temp_min")
     private double temperaturaMin;
+
+    @SerializedName("temp_max")
+    private double temperaturaMax;
+
+    @SerializedName("description")
     private String estadoClima;
+
+    @SerializedName("speed")
     private double velViento;
-    private String dirViento;
+
+    @SerializedName("deg")
+    private double dirViento;
+
+    @SerializedName("pressure")
+    private double presion;
+
+    @SerializedName("humidity")
+    private double humedad;
+
     private Calendar fechaCondiciones;
     private transient Calendar fechaPeticion;
 
+
+    public CondicionesMeteorologicas() {
+        this.temperaturaMax = 0;
+        this.estadoClima = "";
+        this.velViento = 0;
+        this.dirViento = 0;
+        fechaCondiciones = Calendar.getInstance();
+        fechaPeticion = Calendar.getInstance();
+    }
+
+    public double getTemperaturaActual() {
+        return temperaturaActual;
+    }
+
+    public void setTemperaturaActual(double temperaturaActual) {
+        this.temperaturaActual = temperaturaActual;
+    }
+
+    public double getSensacionTermica() {
+        return sensacionTermica;
+    }
+
+    public void setSensacionTermica(double sensacionTermica) {
+        this.sensacionTermica = sensacionTermica;
+    }
 
     public Calendar getFechaCondiciones() {
         return fechaCondiciones;
@@ -27,16 +76,6 @@ public class CondicionesMeteorologicas {
 
     public void setFechaPeticion(Calendar fechaPeticion) {
         this.fechaPeticion = fechaPeticion;
-    }
-
-
-    public CondicionesMeteorologicas() {
-        this.temperaturaMax = 0;
-        this.estadoClima = "";
-        this.velViento = 0;
-        this.dirViento = "";
-        fechaCondiciones = Calendar.getInstance();
-        fechaPeticion = Calendar.getInstance();
     }
 
     public double getTemperaturaMax() {
@@ -71,11 +110,11 @@ public class CondicionesMeteorologicas {
         this.velViento = velViento;
     }
 
-    public String getDirViento() {
+    public double getDirViento() {
         return dirViento;
     }
 
-    public void setDirViento(String dirViento) {
+    public void setDirViento(double dirViento) {
         this.dirViento = dirViento;
     }
 
@@ -91,7 +130,7 @@ public class CondicionesMeteorologicas {
         return  this.temperaturaMax == copyOther.getTemperaturaMax() &&
                 this.temperaturaMin == copyOther.getTemperaturaMin() &&
                 this.estadoClima.equals(copyOther.getEstadoClima()) &&
-                this.dirViento.equals(copyOther.getDirViento()) &&
+                this.dirViento == copyOther.getDirViento() &&
                 this.velViento == copyOther.getVelViento() &&
                 fechaCondiciones.equals(copyOther.getFechaCondiciones());
     }

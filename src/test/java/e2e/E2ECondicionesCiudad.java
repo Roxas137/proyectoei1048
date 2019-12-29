@@ -13,7 +13,7 @@ public class E2ECondicionesCiudad extends E2ETestBed {
     @Test
     public void cityValid() {
         // Given:   una ciudad (String)
-        String ciudad = Constants.CASTELLON;
+        String ciudad = Constants.ID_CASTELLON;
 
         // When:    el usuario busca esa ciudad
         //          la aplicacion hace una peticion al servicio meteorologico

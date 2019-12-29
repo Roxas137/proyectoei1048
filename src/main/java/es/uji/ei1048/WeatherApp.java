@@ -1,8 +1,8 @@
 package es.uji.ei1048;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -19,7 +19,9 @@ public class WeatherApp {
         try {
             String jsonResult = service.getCurrentWeather();
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            CondicionesMeteorologicas condiciones = gson.fromJson(jsonResult, CondicionesMeteorologicas.class);
+            JsonElement data = JsonParser.parseString(jsonResult).getAsJsonObject().get("main");
+
+            CondicionesMeteorologicas condiciones = gson.fromJson(data, CondicionesMeteorologicas.class);
             setPetitionData(condiciones);
             // TODO actualizar la BBDD
             return condiciones;

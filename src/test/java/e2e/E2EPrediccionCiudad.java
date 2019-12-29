@@ -2,7 +2,6 @@ package e2e;
 
 import es.uji.ei1048.CondicionesMeteorologicas;
 import es.uji.ei1048.exceptions.InvalidCityException;
-import es.uji.ei1048.exceptions.InvalidDateException;
 import es.uji.ei1048.utils.Constants;
 import org.junit.Test;
 
@@ -20,7 +19,7 @@ public class E2EPrediccionCiudad extends E2ETestBed {
     @Test
     public void cityValid() {
         // Given:   una ciudad (String)
-        String ciudad = Constants.CASTELLON;
+        String ciudad = Constants.ID_CASTELLON;
 
         // Given:   una fecha y hora para la prediccion
         Calendar fecha = GregorianCalendar.getInstance();
