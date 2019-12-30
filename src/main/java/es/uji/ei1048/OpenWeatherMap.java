@@ -79,19 +79,24 @@ public class OpenWeatherMap implements IWeatherService {
 
         int responseCode = conection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            while ((readLine = in.readLine()) != null) {
-                response.append(readLine);
-            }
-            in.close();
-
-            return response.toString();
+            return getResponse(conection);
         } else {
             System.out.println("GET NOT WORKED");
             return null;
         }
+    }
+
+    private String getResponse(HttpURLConnection conection) throws IOException {
+        String readLine;
+        StringBuilder response = new StringBuilder();
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()));
+        while ((readLine = in.readLine()) != null) {
+            response.append(readLine);
+        }
+        in.close();
+
+        return response.toString();
     }
 
     private URL getUrl(int typePetition, OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws MalformedURLException {

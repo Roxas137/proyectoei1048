@@ -12,7 +12,24 @@ public class CondicionesMeteorologicas {
     @SerializedName("feels_like")
     private double sensacionTermica;
 
+    public double getPresion() {
+        return presion;
+    }
+
+    public void setPresion(double presion) {
+        this.presion = presion;
+    }
+
+    public double getHumedad() {
+        return humedad;
+    }
+
+    public void setHumedad(double humedad) {
+        this.humedad = humedad;
+    }
+
     @SerializedName("temp_min")
+
     private double temperaturaMin;
 
     @SerializedName("temp_max")
