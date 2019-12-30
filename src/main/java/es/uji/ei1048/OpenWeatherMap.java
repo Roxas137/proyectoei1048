@@ -2,6 +2,7 @@ package es.uji.ei1048;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import es.uji.ei1048.jsonTreatment.CityListReader;
 import es.uji.ei1048.utils.Constants;
 import es.uji.ei1048.utils.Unit;
 
@@ -12,8 +13,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 public class OpenWeatherMap implements IWeatherService {
+
+    protected Map<Long, String> cities;
+
+    public OpenWeatherMap(){
+        cities = CityListReader.initialize();
+    }
 
     @Override
     public String getCurrentWeather() throws IOException {
@@ -66,6 +74,8 @@ public class OpenWeatherMap implements IWeatherService {
 
         HttpURLConnection conection = (HttpURLConnection) url.openConnection();
         conection.setRequestMethod("GET");
+
+
 
         int responseCode = conection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -137,5 +147,10 @@ public class OpenWeatherMap implements IWeatherService {
     private String setUnit(Unit unit) {
         // TODO Con kelvin no se si fallaria o no
         return "units=" + unit.getName();
+    }
+
+    @Override
+    public boolean checkCity(String city){
+        return this.cities.containsValue(city.toLowerCase());
     }
 }

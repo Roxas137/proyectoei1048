@@ -11,20 +11,19 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class CityListReader {
-    private static final String rutaAdrian = "C:\\Users\\adria\\IdeaProjects\\proyectoei1048\\src\\main\\java\\es\\uji\\ei1048\\data\\city.list.json";
-    private static final String rutaGuille = "C:\\Users\\Guillermo\\IdeaProjects\\proyectoei1048\\src\\main\\java\\es\\uji\\ei1048\\data\\city.list.json";
 
-    public Map<Long, String> getCities() {
+    public static Map<Long, String> initialize(){
+        String ruta = "src/main/data/city.list.json";
         Map<Long, String> cities = new HashMap<>();
         try {
             JSONParser parser = new JSONParser();
-            Object obj = parser.parse(new FileReader(rutaAdrian));
+            Object obj = parser.parse(new FileReader(ruta));
             JSONArray jsonArray = (JSONArray) obj;
             Iterator iterator1 = jsonArray.iterator();
 
             while (iterator1.hasNext()) {
                 JSONObject jsonObject = (JSONObject) iterator1.next();
-                String cityNames = (String) jsonObject.get("name");
+                String cityNames = ((String) jsonObject.get("name")).toLowerCase();
                 Long cityId = (Long) jsonObject.get("id");
                 cities.putIfAbsent(cityId, cityNames);
             }

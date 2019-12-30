@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import es.uji.ei1048.exceptions.InvalidCityException;
 import es.uji.ei1048.exceptions.InvalidCoordenatesException;
 import es.uji.ei1048.exceptions.InvalidDateException;
+import es.uji.ei1048.jsonTreatment.CityListReader;
 import es.uji.ei1048.utils.Unit;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -66,9 +67,15 @@ public class WeatherAppFacade implements IWeatherAppFacade {
         throw new NotImplementedException();
     }
 
-
+    /**
+     * Comprueba que la ciudad exista.
+     * @param city Ciudad introducida por el usuario.
+     * @throws InvalidCityException En el caso de que la ciudad no exista.
+     */
     private void checkCity(String city) throws InvalidCityException {
-        // TODO
+        if (!service.checkCity(city)){
+            throw new InvalidCityException();
+        }
     }
 
     private void checkCoordenates(Coordenadas coord) throws InvalidCoordenatesException {
