@@ -29,9 +29,8 @@ public class WeatherAppFacade implements IWeatherAppFacade {
         CondicionesMeteorologicas condicionesMeteorologicas = weatherApp.getCurrentWeather(service);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonResult = gson.toJson(condicionesMeteorologicas);
-        File file = new File("\"C:\\Users\\Guillermo\\IdeaProjects\\proyectoei1048\"");
-        System.out.println(file.getAbsolutePath());
         System.out.println(jsonResult);
+
         return condicionesMeteorologicas;
     }
 
