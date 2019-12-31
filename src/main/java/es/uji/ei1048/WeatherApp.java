@@ -53,7 +53,7 @@ public class WeatherApp {
     private List<CondicionesMeteorologicas> fromJsonToList(String jsonResult) {
         JsonArray array = JsonParser.parseString(jsonResult).getAsJsonObject().get("list").getAsJsonArray();
 
-        List<CondicionesMeteorologicas> prediccion = new ArrayList<>();
+        List<CondicionesMeteorologicas> prediction = new ArrayList<>();
 
         // Datos de las condiciones metereologicas
         List<Double> tempMin = new ArrayList<>();
@@ -63,12 +63,14 @@ public class WeatherApp {
         List<Double> windDeg = new ArrayList<>();
         List<Double> pressure = new ArrayList<>();
         List<Double> humidity = new ArrayList<>();
+        Map<String, Integer> weatherState = new HashMap<>();
 
 
         for (JsonElement data : array) {
             Calendar date = getDate(data);
-            JsonElement prediction = data.getAsJsonObject().get("main");
+            JsonElement main = data.getAsJsonObject().get("main");
             JsonElement wind = data.getAsJsonObject().get("wind");
+            JsonElement weather = data.getAsJsonObject().get("weather");
 
             if (date.get(Calendar.HOUR_OF_DAY) == 0 || Calendar.HOUR_OF_DAY == 1 || Calendar.HOUR_OF_DAY == 2) {
                 // Si es un dia nuevo
@@ -81,9 +83,10 @@ public class WeatherApp {
                 condiciones.setDirViento(getMean(windDeg));
                 condiciones.setPresion(getMean(pressure));
                 condiciones.setHumedad(getMean(humidity));
+                condiciones.setEstadoClima(getMostCommonWeather(weatherState));
 
                 // Add the prediction to the list
-                prediccion.add(condiciones);
+                prediction.add(condiciones);
 
                 // Clear all the data
                 tempMin.clear();
@@ -93,16 +96,19 @@ public class WeatherApp {
                 windDeg.clear();
                 pressure.clear();
                 humidity.clear();
+                weatherState.clear();
             }
             // Add all the data to its lists
-            tempMin.add(prediction.getAsJsonObject().get("temp_min").getAsDouble());
-            tempMax.add(prediction.getAsJsonObject().get("temp_max").getAsDouble());
-            tempMean.add(prediction.getAsJsonObject().get("temp").getAsDouble());
-            pressure.add(prediction.getAsJsonObject().get("pressure").getAsDouble());
-            humidity.add(prediction.getAsJsonObject().get("humidity").getAsDouble());
+            tempMin.add(main.getAsJsonObject().get("temp_min").getAsDouble());
+            tempMax.add(main.getAsJsonObject().get("temp_max").getAsDouble());
+            tempMean.add(main.getAsJsonObject().get("temp").getAsDouble());
+            pressure.add(main.getAsJsonObject().get("pressure").getAsDouble());
+            humidity.add(main.getAsJsonObject().get("humidity").getAsDouble());
             windSpeed.add(wind.getAsJsonObject().get("speed").getAsDouble());
             windDeg.add(wind.getAsJsonObject().get("deg").getAsDouble());
+            weatherState.put(weather.getAsJsonObject().get("main").getAsString(), weatherState.getOrDefault(weather.getAsJsonObject().get("main").getAsString(), 0) + 1);
         }
+
         // Save last day
         CondicionesMeteorologicas condiciones = new CondicionesMeteorologicas();
         condiciones.setTemperaturaMin(Collections.min(tempMin));
@@ -112,11 +118,26 @@ public class WeatherApp {
         condiciones.setDirViento(getMean(windDeg));
         condiciones.setPresion(getMean(pressure));
         condiciones.setHumedad(getMean(humidity));
+        condiciones.setEstadoClima(getMostCommonWeather(weatherState));
 
         // Add the prediction to the list
-        prediccion.add(condiciones);
+        prediction.add(condiciones);
 
-        return prediccion;
+        return prediction;
+    }
+
+    private String getMostCommonWeather(Map<String,Integer> weatherState) {
+        int max = 0;
+        String mostCommonWeather = "";
+
+        for (String weatherType : weatherState.keySet()) {
+            if (max < weatherState.get(weatherType)) {
+                max = weatherState.get(weatherType);
+                mostCommonWeather = weatherType;
+            }
+        }
+
+        return mostCommonWeather;
     }
 
     private double getMean(List<Double> data) {
