@@ -1,13 +1,11 @@
-package es.uji.ei1048;
+package es.uji.ei1048.service;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import es.uji.ei1048.OpenWeatherMapTypeId;
 import es.uji.ei1048.jsonTreatment.CityListReader;
 import es.uji.ei1048.utils.Constants;
 import es.uji.ei1048.utils.Unit;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;

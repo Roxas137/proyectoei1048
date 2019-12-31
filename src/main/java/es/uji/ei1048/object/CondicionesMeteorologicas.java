@@ -1,4 +1,4 @@
-package es.uji.ei1048;
+package es.uji.ei1048.object;
 
 import com.google.gson.annotations.SerializedName;
 

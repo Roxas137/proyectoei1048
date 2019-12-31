@@ -1,4 +1,4 @@
-package es.uji.ei1048;
+package es.uji.ei1048.service;
 
 import es.uji.ei1048.utils.Unit;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;

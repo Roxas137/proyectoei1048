@@ -1,10 +1,8 @@
 package e2e;
 
-import es.uji.ei1048.CondicionesMeteorologicas;
-import es.uji.ei1048.Coordenadas;
-import es.uji.ei1048.exceptions.InvalidCityException;
+import es.uji.ei1048.object.CondicionesMeteorologicas;
+import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.exceptions.InvalidCoordenatesException;
-import es.uji.ei1048.exceptions.InvalidDateException;
 import org.junit.Test;
 
 import java.util.Calendar;
