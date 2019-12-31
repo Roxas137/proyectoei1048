@@ -2,7 +2,7 @@ package e2e;
 
 import es.uji.ei1048.exceptions.InvalidCityException;
 import es.uji.ei1048.utils.Constants;
-import es.uji.ei1048.CondicionesMeteorologicas;
+import es.uji.ei1048.object.CondicionesMeteorologicas;
 
 import org.junit.Test;
 

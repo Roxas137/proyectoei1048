@@ -1,7 +1,8 @@
 package es.uji.ei1048;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
+import es.uji.ei1048.object.CondicionesMeteorologicas;
+import es.uji.ei1048.service.IWeatherService;
 
 import java.io.IOException;
 import java.util.*;

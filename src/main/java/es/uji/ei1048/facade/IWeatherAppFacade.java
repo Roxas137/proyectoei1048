@@ -1,5 +1,7 @@
-package es.uji.ei1048;
+package es.uji.ei1048.facade;
 
+import es.uji.ei1048.object.CondicionesMeteorologicas;
+import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.exceptions.InvalidCityException;
 import es.uji.ei1048.exceptions.InvalidCoordenatesException;
 

@@ -1,16 +1,16 @@
-package es.uji.ei1048;
+package es.uji.ei1048.facade;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import es.uji.ei1048.object.CondicionesMeteorologicas;
+import es.uji.ei1048.object.Coordenadas;
+import es.uji.ei1048.WeatherApp;
 import es.uji.ei1048.exceptions.InvalidCityException;
 import es.uji.ei1048.exceptions.InvalidCoordenatesException;
 import es.uji.ei1048.exceptions.InvalidDateException;
-import es.uji.ei1048.jsonTreatment.CityListReader;
-import es.uji.ei1048.utils.Unit;
+import es.uji.ei1048.service.IWeatherService;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.io.File;
-import java.util.Calendar;
 import java.util.List;
 
 public class WeatherAppFacade implements IWeatherAppFacade {
