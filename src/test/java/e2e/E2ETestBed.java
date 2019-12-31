@@ -1,7 +1,7 @@
 package e2e;
 
 import es.uji.ei1048.facade.IWeatherAppFacade;
-import es.uji.ei1048.service.OpenWeatherMap;
+import es.uji.ei1048.service.openWeatherMap.OpenWeatherMap;
 import es.uji.ei1048.facade.WeatherAppFacade;
 import org.junit.Before;
 import org.junit.After;

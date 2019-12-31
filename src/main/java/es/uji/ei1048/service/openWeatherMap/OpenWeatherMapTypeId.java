@@ -1,4 +1,4 @@
-package es.uji.ei1048;
+package es.uji.ei1048.service.openWeatherMap;
 
 /**
  * Las distintas manera que tiene OpenWeatherMap para identificar un lugar

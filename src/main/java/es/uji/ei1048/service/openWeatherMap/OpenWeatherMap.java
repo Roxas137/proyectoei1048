@@ -1,7 +1,7 @@
-package es.uji.ei1048.service;
+package es.uji.ei1048.service.openWeatherMap;
 
-import es.uji.ei1048.OpenWeatherMapTypeId;
 import es.uji.ei1048.jsonTreatment.CityListReader;
+import es.uji.ei1048.service.IWeatherService;
 import es.uji.ei1048.utils.Constants;
 import es.uji.ei1048.utils.Unit;
 
