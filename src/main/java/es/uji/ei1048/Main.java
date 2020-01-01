@@ -10,6 +10,7 @@ public class Main {
         IWeatherService service = new OpenWeatherMap();
         IWeatherAppFacade weatherAppFacade = new WeatherAppFacade(service);
 
-        weatherAppFacade.getCondicionesActuales();
+//        weatherAppFacade.getCondicionesActuales();
+        weatherAppFacade.getPrediccion();
     }
 }

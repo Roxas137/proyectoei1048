@@ -36,6 +36,16 @@ public class WeatherAppFacade implements IWeatherAppFacade {
     }
 
     @Override
+    public List<CondicionesMeteorologicas> getPrediccion() {
+        List<CondicionesMeteorologicas> prediction = weatherApp.getPredictionWeather(service);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonResult = gson.toJson(prediction);
+        System.out.println(jsonResult);
+
+        return prediction;
+    }
+
+    @Override
     public CondicionesMeteorologicas getCondicionesActuales(String ciudad) throws InvalidCityException {
         checkCity(ciudad);
         return weatherApp.getCurrentWeather(service);

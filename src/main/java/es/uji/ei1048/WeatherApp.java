@@ -65,10 +65,12 @@ public class WeatherApp {
         List<Double> pressure = new ArrayList<>();
         List<Double> humidity = new ArrayList<>();
         Map<String, Integer> weatherState = new HashMap<>();
-
+        boolean firstData = true;
+        Calendar lastDate = null;
 
         for (JsonElement data : array) {
             Calendar date = getDate(data);
+            lastDate = date;
             JsonElement main = data.getAsJsonObject().get("main");
             JsonElement wind = data.getAsJsonObject().get("wind");
             JsonElement weather = data.getAsJsonObject().get("weather");
@@ -85,9 +87,13 @@ public class WeatherApp {
                 condiciones.setPresion(getMean(pressure));
                 condiciones.setHumedad(getMean(humidity));
                 condiciones.setEstadoClima(getMostCommonWeather(weatherState));
+                condiciones.setFechaPeticion(Calendar.getInstance());
+                condiciones.setFechaCondiciones(date);
 
-                // Add the prediction to the list
-                prediction.add(condiciones);
+                // Add the prediction of the last day to the list, if it's the first data, don't add
+                if (!firstData) {
+                    prediction.add(condiciones);
+                }
 
                 // Clear all the data
                 tempMin.clear();
@@ -99,6 +105,7 @@ public class WeatherApp {
                 humidity.clear();
                 weatherState.clear();
             }
+            firstData = false;
             // Add all the data to its lists
             tempMin.add(main.getAsJsonObject().get("temp_min").getAsDouble());
             tempMax.add(main.getAsJsonObject().get("temp_max").getAsDouble());
@@ -107,7 +114,7 @@ public class WeatherApp {
             humidity.add(main.getAsJsonObject().get("humidity").getAsDouble());
             windSpeed.add(wind.getAsJsonObject().get("speed").getAsDouble());
             windDeg.add(wind.getAsJsonObject().get("deg").getAsDouble());
-            weatherState.put(weather.getAsJsonObject().get("main").getAsString(), weatherState.getOrDefault(weather.getAsJsonObject().get("main").getAsString(), 0) + 1);
+            weatherState.put(weather.getAsJsonArray().get(0).getAsJsonObject().get("main").getAsString(), weatherState.getOrDefault(weather.getAsJsonArray().get(0).getAsJsonObject().get("main").getAsString(), 0) + 1);
         }
 
         // Save last day
@@ -120,6 +127,8 @@ public class WeatherApp {
         condiciones.setPresion(getMean(pressure));
         condiciones.setHumedad(getMean(humidity));
         condiciones.setEstadoClima(getMostCommonWeather(weatherState));
+        condiciones.setFechaPeticion(Calendar.getInstance());
+        condiciones.setFechaCondiciones(lastDate);
 
         // Add the prediction to the list
         prediction.add(condiciones);
@@ -127,7 +136,7 @@ public class WeatherApp {
         return prediction;
     }
 
-    private String getMostCommonWeather(Map<String,Integer> weatherState) {
+    private String getMostCommonWeather(Map<String, Integer> weatherState) {
         int max = 0;
         String mostCommonWeather = "";
 
@@ -143,9 +152,11 @@ public class WeatherApp {
 
     private double getMean(List<Double> data) {
         double sum = 0;
+
         for (double value : data) {
             sum += value;
         }
+
         return sum / data.size();
     }
 
@@ -160,11 +171,11 @@ public class WeatherApp {
         String month = dateSplitted.split("-")[1];
         String day = dateSplitted.split("-")[2];
 
-        String hour = timeSplitted.split("-")[0];
-        String minute = timeSplitted.split("-")[1];
-        String second = timeSplitted.split("-")[2];
+        String hour = timeSplitted.split(":")[0];
+        String minute = timeSplitted.split(":")[1];
+        String second = timeSplitted.split(":")[2];
 
-        date.set(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day),
+        date.set(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(day),
                 Integer.parseInt(hour), Integer.parseInt(minute), Integer.parseInt(second));
 
         return date;
