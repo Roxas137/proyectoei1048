@@ -226,6 +226,4 @@ public class GestionDB extends UnicastRemoteObject {
             return false;
         }
     }
-
-
 }
