@@ -4,63 +4,56 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Calendar;
 
+/**
+ * Clase que representa las condiciones meteorologicas tras una peticion
+ * Los valores se inicializan por defecto a null para que al convertirlo a json puedan ser ignorados
+ */
 public class CondicionesMeteorologicas {
 
     @SerializedName("temp")
-    private double temperaturaActual;
+    private Double temperaturaActual;
 
     @SerializedName("feels_like")
-    private double sensacionTermica;
-
-    public double getPresion() {
-        return presion;
-    }
-
-    public void setPresion(double presion) {
-        this.presion = presion;
-    }
-
-    public double getHumedad() {
-        return humedad;
-    }
-
-    public void setHumedad(double humedad) {
-        this.humedad = humedad;
-    }
+    private Double sensacionTermica;
 
     @SerializedName("temp_min")
 
-    private double temperaturaMin;
+    private Double temperaturaMin;
 
     @SerializedName("temp_max")
-    private double temperaturaMax;
+    private Double temperaturaMax;
 
     @SerializedName("description")
     private String estadoClima;
 
     @SerializedName("speed")
-    private double velViento;
+    private Double velViento;
 
     @SerializedName("deg")
-    private double dirViento;
+    private Double dirViento;
 
     @SerializedName("pressure")
-    private double presion;
+    private Double presion;
 
     @SerializedName("humidity")
-    private double humedad;
+    private Double humedad;
 
     private Calendar fechaCondiciones;
-    private transient Calendar fechaPeticion;
+    private Calendar fechaPeticion;
 
 
     public CondicionesMeteorologicas() {
-        this.temperaturaMax = 0;
-        this.estadoClima = "";
-        this.velViento = 0;
-        this.dirViento = 0;
-        fechaCondiciones = Calendar.getInstance();
-        fechaPeticion = Calendar.getInstance();
+        this.temperaturaActual = null;
+        this.sensacionTermica = null;
+        this.temperaturaMin = null;
+        this.temperaturaMax = null;
+        this.estadoClima = null;
+        this.velViento = null;
+        this.dirViento = null;
+        this.presion = null;
+        this.humedad = null;
+        this.fechaCondiciones = Calendar.getInstance();
+        this.fechaPeticion = Calendar.getInstance();
     }
 
     public double getTemperaturaActual() {
@@ -77,6 +70,22 @@ public class CondicionesMeteorologicas {
 
     public void setSensacionTermica(double sensacionTermica) {
         this.sensacionTermica = sensacionTermica;
+    }
+
+    public double getPresion() {
+        return presion;
+    }
+
+    public void setPresion(double presion) {
+        this.presion = presion;
+    }
+
+    public double getHumedad() {
+        return humedad;
+    }
+
+    public void setHumedad(double humedad) {
+        this.humedad = humedad;
     }
 
     public Calendar getFechaCondiciones() {
