@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class GestionDB extends UnicastRemoteObject {
@@ -190,9 +191,8 @@ public class GestionDB extends UnicastRemoteObject {
      * @param condiciones Condiciones meteorologicas que se quieren registrar.
      * @param idCiudad Identificador de la ciudad de las condiciones meteorologicas a registrar.
      * @return Devuelve true si se registra correctamente y false en caso contrario.
-     * @throws RemoteException Se lanza esta excepcion en el caso de que exista algun error.
      */
-    public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Long idCiudad) throws RemoteException{
+    public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Long idCiudad){
         try{
             Connection connection = connect();
             String sentence = "INSERT INTO CondicionesMeteorologicas VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -223,6 +223,167 @@ public class GestionDB extends UnicastRemoteObject {
             return false;
         }catch (NullPointerException e){
             System.out.println("Ha habido algun error en la conexion con la base de datos.");
+            return false;
+        }
+    }
+
+    /**
+     * Obtener las condicciones meteorologicas a partir de unos datos y coordenadas concretas.
+     *
+     * @param fechaCondicion Fecha de las condiciones deseadas.
+     * @param coordenadas Localizacion de las condiciones.
+     * @param tipoPeticion Tipo de peticion [1 - current; 0 - forecast]
+     * @return Las condiciones meteorologicas deseadas.
+     */
+    public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, Coordenadas coordenadas, int tipoPeticion){
+        try{
+            CondicionesMeteorologicas condicionesMeteorologicas = new CondicionesMeteorologicas();
+            Connection connection = connect();
+            String sentence = "SELECT * FROM CondicionesMeteorlogicas WHERE longitud = ? and latitud = ? and fechaCondiciones = ? and tipoPeticion = ?";
+            PreparedStatement st = connection.prepareStatement(sentence);
+
+            st.setDouble(1, coordenadas.getLongitud());
+            st.setDouble(2, coordenadas.getLatitud());
+            st.setDate(3, new Date(fechaCondicion.getTime().getTime()));
+            st.setInt(4, tipoPeticion);
+
+            ResultSet rs = st.executeQuery();
+            Calendar calendar = Calendar.getInstance();
+
+            condicionesMeteorologicas.setVelViento(rs.getDouble("velViento"));
+            condicionesMeteorologicas.setTemperaturaMin(rs.getDouble("temperaturaMin"));
+            condicionesMeteorologicas.setTemperaturaMax(rs.getDouble("temperaturaMax"));
+            condicionesMeteorologicas.setTemperaturaActual(rs.getDouble("temperaturaActual"));
+            condicionesMeteorologicas.setSensacionTermica(rs.getDouble("sensacionTermica"));
+            condicionesMeteorologicas.setPresion(rs.getDouble("presion"));
+            condicionesMeteorologicas.setHumedad(rs.getDouble("humedad"));
+            condicionesMeteorologicas.setEstadoClima(rs.getString("estadoClima"));
+            condicionesMeteorologicas.setDirViento(rs.getDouble("dirViento"));
+            calendar.setTime(rs.getDate("fechaCondiciones"));
+            condicionesMeteorologicas.setFechaCondiciones(calendar);
+            calendar.setTime(rs.getDate("fechaPeticion"));
+            condicionesMeteorologicas.setFechaPeticion(calendar);
+
+
+            System.out.println("Condiciones meteorologicas obtenidas correctamente.");
+            connection.close();
+            return condicionesMeteorologicas;
+        }catch (SQLException e){
+            System.out.println("Ha habido algun error al obtener las condiciones meteorologicas de la base de datos.");
+            return new CondicionesMeteorologicas();
+        }catch (NullPointerException e){
+            System.out.println("He habido algun error al conectarse a la base de datos.");
+            return new CondicionesMeteorologicas();
+        }
+    }
+
+    /**
+     * Obtener las condiciones meteorologicas a partir de unos datos y una ciudad concreta.
+     *
+     * @param fechaCondicion Fecha de las condiciones deseadas.
+     * @param idCiudad Identificador de la ciudad de las ondiciones.
+     * @param tipoPeticion Tipo de peticion [1 - current; 0 - forecast]
+     * @return Las condiciones meteorologicas deseadas.
+     */
+    public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, int idCiudad, int tipoPeticion){
+        try{
+            CondicionesMeteorologicas condicionesMeteorologicas = new CondicionesMeteorologicas();
+            Connection connection = connect();
+            String sentence = "SELECT * FROM CondicionesMeteorlogicas WHERE idCiudad = ? and fechaCondiciones = ? and tipoPeticion = ?";
+            PreparedStatement st = connection.prepareStatement(sentence);
+
+            st.setDouble(1, idCiudad);
+            st.setDate(2, new Date(fechaCondicion.getTime().getTime()));
+            st.setInt(3, tipoPeticion);
+
+            ResultSet rs = st.executeQuery();
+            Calendar calendar = Calendar.getInstance();
+
+            condicionesMeteorologicas.setVelViento(rs.getDouble("velViento"));
+            condicionesMeteorologicas.setTemperaturaMin(rs.getDouble("temperaturaMin"));
+            condicionesMeteorologicas.setTemperaturaMax(rs.getDouble("temperaturaMax"));
+            condicionesMeteorologicas.setTemperaturaActual(rs.getDouble("temperaturaActual"));
+            condicionesMeteorologicas.setSensacionTermica(rs.getDouble("sensacionTermica"));
+            condicionesMeteorologicas.setPresion(rs.getDouble("presion"));
+            condicionesMeteorologicas.setHumedad(rs.getDouble("humedad"));
+            condicionesMeteorologicas.setEstadoClima(rs.getString("estadoClima"));
+            condicionesMeteorologicas.setDirViento(rs.getDouble("dirViento"));
+            calendar.setTime(rs.getDate("fechaCondiciones"));
+            condicionesMeteorologicas.setFechaCondiciones(calendar);
+            calendar.setTime(rs.getDate("fechaPeticion"));
+            condicionesMeteorologicas.setFechaPeticion(calendar);
+
+
+            System.out.println("Condiciones meteorologicas obtenidas correctamente.");
+            connection.close();
+            return condicionesMeteorologicas;
+        }catch (SQLException e){
+            System.out.println("Ha habido algun error al obtener las condiciones meteorologicas de la base de datos.");
+            return new CondicionesMeteorologicas();
+        }catch (NullPointerException e){
+            System.out.println("He habido algun error al conectarse a la base de datos.");
+            return new CondicionesMeteorologicas();
+        }
+    }
+
+    /**
+     * Comprueba si existen unas condiciones determinadas en la base de datos a partir de unas coordenadas.
+     *
+     * @param fechaCondicion Fecha de las condiciones deseadas.
+     * @param coordenadas Localización de las condiciones meteorlogicas.
+     * @param tipoPeticion Tipo de peticion [1 - current; 0 - forecast]
+     * @return True si se encuentra alguna condicion a partir de esos datos, false en caso contrario.
+     */
+    public boolean checkCondiciones(Calendar fechaCondicion, Coordenadas coordenadas, int tipoPeticion){
+        try{
+            Connection connection = connect();
+            String sentence = "SELECT COUNT(*) as condicion FROM CondicionesMeteorlogicas WHERE longitud = ? and latitud = ? and fechaCondiciones = ? and tipoPeticion = ?";
+            PreparedStatement st = connection.prepareStatement(sentence);
+
+            st.setDouble(1, coordenadas.getLongitud());
+            st.setDouble(2, coordenadas.getLatitud());
+            st.setDate(3, new Date(fechaCondicion.getTime().getTime()));
+            st.setInt(4, tipoPeticion);
+
+            ResultSet rs = st.executeQuery();
+
+            connection.close();
+            return rs.getInt("condicion") > 0;
+        }catch (SQLException e){
+            System.out.println("Ha habdio algun error al obtener los datos de la base de datos");
+            return false;
+        }catch (NullPointerException e){
+            System.out.println("Ha ocurrido un error al conectarse a la base de datos.");
+            return false;
+        }
+    }
+
+    /**
+     *
+     * @param fechaCondicion Fecha de las condiciones deseadas.
+     * @param idCiudad Identificador de la ciudad de las ondiciones.
+     * @param tipoPeticion Tipo de peticion [1 - current; 0 - forecast]
+     * @return True si se encuentra alguna condicion a partir de esos datos, false en caso contrario.
+     */
+    public boolean checkCondiciones(Calendar fechaCondicion, int idCiudad, int tipoPeticion){
+        try{
+            Connection connection = connect();
+            String sentence = "SELECT COUNT(*) as condicion FROM CondicionesMeteorlogicas WHERE idCiudad = ? and fechaCondiciones = ? and tipoPeticion = ?";
+            PreparedStatement st = connection.prepareStatement(sentence);
+
+            st.setDouble(1, idCiudad);
+            st.setDate(2, new Date(fechaCondicion.getTime().getTime()));
+            st.setInt(3, tipoPeticion);
+
+            ResultSet rs = st.executeQuery();
+
+            connection.close();
+            return rs.getInt("condicion") > 0;
+        }catch (SQLException e){
+            System.out.println("Ha habdio algun error al obtener los datos de la base de datos");
+            return false;
+        }catch (NullPointerException e){
+            System.out.println("Ha ocurrido un error al conectarse a la base de datos.");
             return false;
         }
     }
