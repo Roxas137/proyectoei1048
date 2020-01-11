@@ -1,6 +1,7 @@
 package es.uji.ei1048.service.openWeatherMap;
 
 import es.uji.ei1048.jsonTreatment.CityListReader;
+import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.service.IWeatherService;
 import es.uji.ei1048.utils.Constants;
 import es.uji.ei1048.utils.Unit;
@@ -11,11 +12,16 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Map;
 
 public class OpenWeatherMap implements IWeatherService {
 
     protected Map<Long, String> cities;
+    private long idCiudadEscogido; //-500 si NO es una ciudad
+    private Coordenadas coordenadasEscogidas; //Latitud y longitud = -500 si NO es una coordenada
+    private Calendar fechaCondicion;
+    private Calendar fechaPeticion;
 
     public OpenWeatherMap(){
         cities = CityListReader.initialize();
@@ -155,5 +161,21 @@ public class OpenWeatherMap implements IWeatherService {
     @Override
     public boolean checkCity(String city){
         return this.cities.containsValue(city.toLowerCase());
+    }
+
+    public long getIdCiudadEscogido() {
+        return idCiudadEscogido;
+    }
+
+    public Coordenadas getCoordenadasEscogidas() {
+        return coordenadasEscogidas;
+    }
+
+    public Calendar getFechaCondicion() {
+        return fechaCondicion;
+    }
+
+    public Calendar getFechaPeticion() {
+        return fechaPeticion;
     }
 }
