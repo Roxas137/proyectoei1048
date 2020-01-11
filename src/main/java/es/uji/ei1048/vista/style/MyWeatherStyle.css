@@ -1,0 +1,120 @@
+/*
+Estilos de Label
+ */
+
+.label {
+    -fx-font-family: "Century Gothic";
+    -fx-font-weight: bold;
+    -fx-font-size: 14pt;
+    -fx-text-fill: white;
+}
+
+.label-header {
+    -fx-font-size: 48px;
+}
+
+/**
+Estilo de ChoiceBox
+ */
+
+
+
+/*
+Estilos de TabPane
+ */
+.tab-pane > .tab-header-area > .headers-region > .tab:top {
+    -fx-border-color: lightgrey;
+    -fx-border-radius: 5 5 0 0;
+    -fx-background-radius: 5 5 0 0;
+    -fx-background-color: white;
+    -fx-pref-height: 40px;
+    -fx-background-insets: 0;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected:top {
+    -fx-border-color: white, transparent transparent transparent transparent;
+    -fx-padding: 15;
+    -fx-border-width: 3;
+    -fx-border-radius: 5 5 0 0;
+    -fx-background-radius: 5 5 0 0;
+    -fx-background-color: #009DDC;
+    -fx-pref-height: 40px;
+}
+
+
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected > .tab-container > .tab-label {
+    -fx-alignment: CENTER;
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: #2381E9;
+    -fx-font-weight: bold;
+}
+
+
+.tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color: #009DDC;
+    -fx-border-color: white;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-insets: 0;
+    -fx-pref-height: 45px;
+}
+
+/*
+Estilos de button
+ */
+.button {
+    -fx-padding: 5 22 5 22;
+    -fx-border-color: #dfdfdf;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-background-color: #ffffff;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 12pt;
+    -fx-text-fill: #4f4f4f;
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;
+}
+
+.button:hover {
+    -fx-background-color: #e9e9e9;
+    -fx-cursor: hand;
+}
+
+.button:pressed, .button:default:hover:pressed {
+    -fx-background-color: lightgrey;
+    -fx-text-fill: grey;
+}
+
+.button:focused {
+    -fx-border-color: white, lightgrey;
+    -fx-border-width: 2, 2;
+    -fx-border-style: solid;
+    -fx-border-radius: 5, 5;
+    -fx-border-insets: 2 2 2 2, 0;
+}
+
+.button:disabled, .button:default:disabled {
+    -fx-opacity: 0.7;
+    -fx-background-color: #f0f0f0;
+
+}
+
+.button:default {
+    -fx-background-color: -fx-focus-color;
+    -fx-text-fill: #ffffff;
+}
+
+.button:default:hover {
+    -fx-background-color: derive(-fx-focus-color,30%);
+}
+
+.choice-box {
+    -fx-max-height: 10;
+}

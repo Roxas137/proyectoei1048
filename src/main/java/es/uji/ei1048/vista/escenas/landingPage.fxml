@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.effect.Shadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #009DDC;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.uji.ei1048.vista.controlador.LandingPageController">
+   <children>
+      <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+         <children>
+            <Label alignment="CENTER" layoutX="4.0" layoutY="6.0" styleClass="label-header" stylesheets="@../style/MyWeatherStyle.css" text="My Weather App" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font name="Century Gothic Bold" size="48.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" blendMode="COLOR_BURN" layoutX="12.0" layoutY="9.0" styleClass="label-header" stylesheets="@../style/MyWeatherStyle.css" text="My Weather App" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+               <font>
+                  <Font name="Century Gothic Bold" size="48.0" />
+               </font>
+               <effect>
+                  <Shadow blurType="GAUSSIAN" height="11.92" radius="8.4375" width="23.83" />
+               </effect>
+            </Label>
+         </children>
+      </AnchorPane>
+      <VBox layoutY="80.0" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
+         <children>
+            <HBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <Label stylesheets="@../style/MyWeatherStyle.css" text="Servicio: " />
+                  <ChoiceBox fx:id="servicio" prefWidth="150.0" />
+               </children>
+            </HBox>
+            <AnchorPane style="-fx-background-color: rgba(255,255,255,0.5);" VBox.vgrow="ALWAYS">
+               <children>
+                  <TabPane prefHeight="200.0" prefWidth="200.0" stylesheets="@../style/MyWeatherStyle.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                        <Tab text="Consulta actual">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                        </Tab>
+                      <Tab text="Tiempo en fav 1">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                      <Tab text="Tiempo en fav 2">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                        <Tab text="Tiempo en fav 3">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                        </Tab>
+                        <Tab text="Tiempo en fav 4">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                        </Tab>
+                    </tabs>
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+            <HBox alignment="CENTER" spacing="15.0">
+               <children>
+                  <VBox spacing="10.0">
+                     <children>
+                        <HBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <RadioButton mnemonicParsing="false" selected="true" styleClass="label" stylesheets="@../style/MyWeatherStyle.css" text="Ciudad:">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="tipoBusqueda" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <TextField fx:id="ciudad" promptText="ciudad, pais" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <RadioButton mnemonicParsing="false" styleClass="label" stylesheets="@../style/MyWeatherStyle.css" text="Coordenadas:" toggleGroup="$tipoBusqueda" />
+                              <VBox spacing="2.0">
+                                 <children>
+                                    <TextField fx:id="latitud" disable="true" promptText="Latitud" />
+                                    <TextField fx:id="longitud" disable="true" promptText="Longitud" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <ChoiceBox fx:id="prediccion" prefWidth="200.0" />
+                  <Button fx:id="botonConsulta" disable="true" mnemonicParsing="false" onAction="#consultaTiempo" stylesheets="@../style/MyWeatherStyle.css" text="Consultar el tiempo" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
