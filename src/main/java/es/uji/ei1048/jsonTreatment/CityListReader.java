@@ -6,9 +6,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class CityListReader {
 
@@ -20,12 +18,18 @@ public class CityListReader {
             Object obj = parser.parse(new FileReader(ruta));
             JSONArray jsonArray = (JSONArray) obj;
             Iterator iterator1 = jsonArray.iterator();
+            List<String> cityCountry = new ArrayList<>();
 
             while (iterator1.hasNext()) {
                 JSONObject jsonObject = (JSONObject) iterator1.next();
                 String cityNames = ((String) jsonObject.get("name")).toLowerCase();
                 Long cityId = (Long) jsonObject.get("id");
-                cities.putIfAbsent(cityId, cityNames);
+                String country =  ((String) jsonObject.get("country")).toLowerCase();
+
+
+                cities.putIfAbsent(cityId, cityNames+"#"+country);
+
+                cityCountry.clear();
             }
         } catch (IOException e) {
             System.out.println("A fatal error ocurred while reading json file.");

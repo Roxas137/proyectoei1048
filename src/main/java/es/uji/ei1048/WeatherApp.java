@@ -22,9 +22,13 @@ public class WeatherApp {
         }
     }
 
-    public CondicionesMeteorologicas getCurrentWeather(IWeatherService service, Calendar fechaCondicion, Coordenadas coordenadas, long idCiudad, Calendar fechaPeticion) {
-
+    public CondicionesMeteorologicas getCurrentWeather(IWeatherService service) {
         try {
+            Calendar fechaCondicion = service.getFechaCondicion();
+            Calendar fechaPeticion = service.getFechaPeticion();
+            long idCiudad = service.getIdCiudadEscogido();
+            Coordenadas coordenadas = service.getCoordenadasEscogidas();
+
             CondicionesMeteorologicas condicionesGuardadas;
             if (idCiudad == -500){
                 condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, coordenadas, 1);
@@ -45,8 +49,13 @@ public class WeatherApp {
     }
 
 
-    public List<CondicionesMeteorologicas> getPredictionWeather(IWeatherService service, Coordenadas coordenadas, long idCiudad, Calendar fechaCondicion, Calendar fechaPeticion) {
+    public List<CondicionesMeteorologicas> getPredictionWeather(IWeatherService service) {
         try {
+            Calendar fechaCondicion = service.getFechaCondicion();
+            Calendar fechaPeticion = service.getFechaPeticion();
+            long idCiudad = service.getIdCiudadEscogido();
+            Coordenadas coordenadas = service.getCoordenadasEscogidas();
+
             List<CondicionesMeteorologicas> prediccionGuardada;
             if (idCiudad == -500){
                 prediccionGuardada = gestionDB.getPrediccion(coordenadas);

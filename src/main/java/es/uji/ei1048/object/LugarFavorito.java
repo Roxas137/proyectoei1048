@@ -1,7 +1,7 @@
 package es.uji.ei1048.object;
 
 public class LugarFavorito {
-    //para diferenciar de si el lugar favorito es coordenada o ciudad --> -500
+    //Para diferenciar de si el lugar favorito es coordenada o ciudad --> -500
     private long idCiudad; //-500 si NO es una ciudad
     private double longitud; //-500 si NO es una coordenada
     private double latitud; //-500 si NO es una coordenada
