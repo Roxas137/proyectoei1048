@@ -1,24 +1,42 @@
 package es.uji.ei1048;
 
 import com.google.gson.*;
+import es.uji.ei1048.gestionDB.GestionDB;
 import es.uji.ei1048.object.CondicionesMeteorologicas;
+import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.service.IWeatherService;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class WeatherApp {
 
+    GestionDB gestionDB;
+
     public WeatherApp() {
+        try {
+            gestionDB = new GestionDB();
+        } catch (RemoteException e) {
+            System.out.println("Ha ocurrido un error al instanciar la base de datos.");
+        }
     }
 
-    public CondicionesMeteorologicas getCurrentWeather(IWeatherService service) {
-        // TODO mirar en la BBDD
+    public CondicionesMeteorologicas getCurrentWeather(IWeatherService service, Calendar fechaCondicion, Coordenadas coordenadas, long idCiudad, Calendar fechaPeticion) {
 
         try {
+            CondicionesMeteorologicas condicionesGuardadas;
+            if (idCiudad == -500){
+                condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, coordenadas, 1);
+            }else{
+                condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, idCiudad, 1);
+            }
+
+            if (comparaFechaPeticiones(fechaPeticion, condicionesGuardadas)) return condicionesGuardadas;
+
             String jsonResult = service.getCurrentWeather();
             CondicionesMeteorologicas condiciones = fromJsonToObject(jsonResult);
-            updateDatabase(condiciones);
+            updateDatabase(condiciones, idCiudad, 1, coordenadas);
             return condiciones;
         } catch (IOException e) {
             e.printStackTrace();
@@ -26,16 +44,24 @@ public class WeatherApp {
         return null;
     }
 
-    public List<CondicionesMeteorologicas> getPredictionWeather(IWeatherService service) {
-        // TODO mirar en la BBDD
 
+    public List<CondicionesMeteorologicas> getPredictionWeather(IWeatherService service, Coordenadas coordenadas, long idCiudad, Calendar fechaCondicion, Calendar fechaPeticion) {
         try {
+            List<CondicionesMeteorologicas> prediccionGuardada;
+            if (idCiudad == -500){
+                prediccionGuardada = gestionDB.getPrediccion(coordenadas);
+            }else{
+                prediccionGuardada = gestionDB.getPrediccion(idCiudad);
+            }
+
+            if (comparaFechaPeticiones(fechaPeticion, prediccionGuardada.get(0))) return prediccionGuardada;
+
             String jsonResult = service.getPredictionWeather();
             List<CondicionesMeteorologicas> condiciones = fromJsonToList(jsonResult);
             setPetitionDate(condiciones);
             // TODO: 27/12/2019 Convertir a una unica prediccion por dia
             for (CondicionesMeteorologicas condicion : condiciones) {
-                updateDatabase(condicion);
+                updateDatabase(condicion, idCiudad, 0, coordenadas);
             }
             return condiciones;
         } catch (IOException e) {
@@ -190,8 +216,12 @@ public class WeatherApp {
         return condiciones;
     }
 
-    private void updateDatabase(CondicionesMeteorologicas condiciones) {
-        // TODO: 30/12/2019 Adrian, esto es tarea tuya
+    private void updateDatabase(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion, Coordenadas coordenadas) {
+        if (idCiudad == -500){
+            gestionDB.registrarCondicionesMeteorologicas(condiciones, coordenadas, tipoPeticion);
+        }else{
+            gestionDB.registrarCondicionesMeteorologicas(condiciones, idCiudad, tipoPeticion);
+        }
     }
 
     private void setPetitionDate(List<CondicionesMeteorologicas> condiciones) {
@@ -203,4 +233,21 @@ public class WeatherApp {
     private void setPetitionDate(CondicionesMeteorologicas condicion) {
         condicion.setFechaPeticion(Calendar.getInstance());
     }
+
+    /**
+     * Compara la fecha de la peticion que se quiere realizar con la fecha de las condiciones guardadas.
+     *
+     * @param fechaPeticion fecha de la peticion que se quiere realizar.
+     * @param condicionesGuardadas condiciones obtenidas de la base de datos.
+     * @return Si la diferencia entre ambas fechas es de menos de media hora devuelve true en caso contrario, false.
+     */
+    private boolean comparaFechaPeticiones(Calendar fechaPeticion, CondicionesMeteorologicas condicionesGuardadas) {
+        if (condicionesGuardadas != null){
+            Calendar fechaPeticionGuardada = condicionesGuardadas.getFechaPeticion();
+            //Si la diferencia es de menos de media hora entonces se escogen las guardadas.
+            return fechaPeticion.getTimeInMillis() - fechaPeticionGuardada.getTimeInMillis() <= 1800000;
+        }
+        return false;
+    }
+
 }

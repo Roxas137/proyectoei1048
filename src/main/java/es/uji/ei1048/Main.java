@@ -12,5 +12,7 @@ public class Main {
 
 //        weatherAppFacade.getCondicionesActuales();
         weatherAppFacade.getPrediccion();
+
+
     }
 }

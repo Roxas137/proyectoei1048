@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class GestionDB extends UnicastRemoteObject {
-    protected GestionDB() throws RemoteException {}
+    public GestionDB() throws RemoteException {}
 
     /**
      * Se realiza una conexion con la base de datos.
@@ -42,7 +42,7 @@ public class GestionDB extends UnicastRemoteObject {
      * @return Devuelve true en el caso de que se registre de forma correcta y false en caso contrario.
      * @throws RemoteException Si se produce algun error no previsto.
      */
-    public boolean registrarLugarFavorito(Long idCiudad, String etiqueta) throws RemoteException {
+    public boolean registrarLugarFavorito(Long idCiudad, String etiqueta){
         try {
             Connection connection = connect();
 
@@ -58,6 +58,7 @@ public class GestionDB extends UnicastRemoteObject {
 
             System.out.println("Lugar favorito registrado correctamente.");
             connection.close();
+
             return true;
         }catch (SQLException e){
             System.out.println("Ha ocurrido un error al registrar una ciudad como lugar favorito.");
@@ -76,7 +77,7 @@ public class GestionDB extends UnicastRemoteObject {
      * @return Devuelve true en el caso de que se registre de forma correcta y false en caso contrario.
      * @throws RemoteException Si se produce algun error no previsto.
      */
-    public boolean registrarLugarFavorito(double longitud, double latitud, String etiqueta) throws  RemoteException {
+    public boolean registrarLugarFavorito(double longitud, double latitud, String etiqueta){
 
         try {
             Connection connection = connect();
@@ -93,6 +94,7 @@ public class GestionDB extends UnicastRemoteObject {
 
             System.out.println("Lugar favorito registrado correctamente.");
             connection.close();
+
             return true;
         }catch (SQLException e){
             System.out.println("Ha ocurrido un error al registrar unas coordenadas como lugar favorito.");
@@ -108,7 +110,7 @@ public class GestionDB extends UnicastRemoteObject {
      * @return El listado de lugares favoritos.
      * @throws RemoteException En el caso de que algo vaya mal.
      */
-    public List<LugarFavorito> getLugaresFavoritos() throws RemoteException {
+    public List<LugarFavorito> getLugaresFavoritos() {
         try{
             List<LugarFavorito> result = new ArrayList<>();
             Connection connection = connect();
@@ -134,6 +136,8 @@ public class GestionDB extends UnicastRemoteObject {
 
             System.out.println("Lugares favoritos obtenidos correctamente.");
             connection.close();
+            rs.close();
+
             return result;
         }catch (SQLException e){
             System.out.println("Ha habido un error al obtener los lugares favoritos.");
@@ -151,7 +155,7 @@ public class GestionDB extends UnicastRemoteObject {
      * @return Devuelve true si se registra correctamente y false en caso contrario.
      * @throws RemoteException Se lanza esta excepcion en el caso de que exista algun error.
      */
-    public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Coordenadas coordenadas) throws RemoteException{
+    public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Coordenadas coordenadas, int tipoPeticion){
         try{
             Connection connection = connect();
             String sentence = "INSERT INTO CondicionesMeteorologicas VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -169,13 +173,15 @@ public class GestionDB extends UnicastRemoteObject {
             st.setDouble(10, condiciones.getDirViento());
             st.setDouble(11, condiciones.getPresion());
             st.setDouble(12, condiciones.getHumedad());
-            st.setDate(13, new Date(condiciones.getFechaCondiciones().getTime().getTime()));
-            st.setDate(14, new Date(condiciones.getFechaPeticion().getTime().getTime()));
+            st.setLong(13, condiciones.getFechaCondiciones().getTimeInMillis());
+            st.setLong(14, condiciones.getFechaPeticion().getTimeInMillis());
+            st.setInt(15, tipoPeticion);
 
             st.executeUpdate();
 
             System.out.println("Condiciones meteorologicas registradas correctamente.");
             connection.close();
+
             return true;
         }catch (SQLException e){
             System.out.println("Ha ocurrido un error al registrar unas condiciones meteorologicas en la base de datos.");
@@ -192,10 +198,10 @@ public class GestionDB extends UnicastRemoteObject {
      * @param idCiudad Identificador de la ciudad de las condiciones meteorologicas a registrar.
      * @return Devuelve true si se registra correctamente y false en caso contrario.
      */
-    public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Long idCiudad){
+    public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion){
         try{
             Connection connection = connect();
-            String sentence = "INSERT INTO CondicionesMeteorologicas VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sentence = "INSERT INTO CondicionesMeteorologicas VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, -500);
@@ -210,13 +216,15 @@ public class GestionDB extends UnicastRemoteObject {
             st.setDouble(10, condiciones.getDirViento());
             st.setDouble(11, condiciones.getPresion());
             st.setDouble(12, condiciones.getHumedad());
-            st.setDate(13, new Date(condiciones.getFechaCondiciones().getTime().getTime()));
-            st.setDate(14, new Date(condiciones.getFechaPeticion().getTime().getTime()));
+            st.setLong(13, condiciones.getFechaCondiciones().getTimeInMillis());
+            st.setLong(14, condiciones.getFechaPeticion().getTimeInMillis());
+            st.setInt(15, tipoPeticion);
 
             st.executeUpdate();
 
             System.out.println("Condiciones meteorologicas registradas correctamente.");
             connection.close();
+
             return true;
         }catch (SQLException e){
             System.out.println("Ha ocurrido un error al registrar unas condiciones meteorologicas en la base de datos.");
@@ -237,43 +245,29 @@ public class GestionDB extends UnicastRemoteObject {
      */
     public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, Coordenadas coordenadas, int tipoPeticion){
         try{
-            CondicionesMeteorologicas condicionesMeteorologicas = new CondicionesMeteorologicas();
             Connection connection = connect();
             String sentence = "SELECT * FROM CondicionesMeteorlogicas WHERE longitud = ? and latitud = ? and fechaCondiciones = ? and tipoPeticion = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, coordenadas.getLongitud());
             st.setDouble(2, coordenadas.getLatitud());
-            st.setDate(3, new Date(fechaCondicion.getTime().getTime()));
+            st.setLong(3, fechaCondicion.getTimeInMillis());
             st.setInt(4, tipoPeticion);
 
             ResultSet rs = st.executeQuery();
-            Calendar calendar = Calendar.getInstance();
-
-            condicionesMeteorologicas.setVelViento(rs.getDouble("velViento"));
-            condicionesMeteorologicas.setTemperaturaMin(rs.getDouble("temperaturaMin"));
-            condicionesMeteorologicas.setTemperaturaMax(rs.getDouble("temperaturaMax"));
-            condicionesMeteorologicas.setTemperaturaActual(rs.getDouble("temperaturaActual"));
-            condicionesMeteorologicas.setSensacionTermica(rs.getDouble("sensacionTermica"));
-            condicionesMeteorologicas.setPresion(rs.getDouble("presion"));
-            condicionesMeteorologicas.setHumedad(rs.getDouble("humedad"));
-            condicionesMeteorologicas.setEstadoClima(rs.getString("estadoClima"));
-            condicionesMeteorologicas.setDirViento(rs.getDouble("dirViento"));
-            calendar.setTime(rs.getDate("fechaCondiciones"));
-            condicionesMeteorologicas.setFechaCondiciones(calendar);
-            calendar.setTime(rs.getDate("fechaPeticion"));
-            condicionesMeteorologicas.setFechaPeticion(calendar);
-
+            CondicionesMeteorologicas condicionesMeteorologicas = toCondicionMeteorologica(rs);
 
             System.out.println("Condiciones meteorologicas obtenidas correctamente.");
             connection.close();
+            rs.close();
+
             return condicionesMeteorologicas;
         }catch (SQLException e){
             System.out.println("Ha habido algun error al obtener las condiciones meteorologicas de la base de datos.");
-            return new CondicionesMeteorologicas();
+            return null;
         }catch (NullPointerException e){
             System.out.println("He habido algun error al conectarse a la base de datos.");
-            return new CondicionesMeteorologicas();
+            return null;
         }
     }
 
@@ -285,44 +279,103 @@ public class GestionDB extends UnicastRemoteObject {
      * @param tipoPeticion Tipo de peticion [1 - current; 0 - forecast]
      * @return Las condiciones meteorologicas deseadas.
      */
-    public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, int idCiudad, int tipoPeticion){
+    public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, long idCiudad, int tipoPeticion){
         try{
-            CondicionesMeteorologicas condicionesMeteorologicas = new CondicionesMeteorologicas();
             Connection connection = connect();
             String sentence = "SELECT * FROM CondicionesMeteorlogicas WHERE idCiudad = ? and fechaCondiciones = ? and tipoPeticion = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
-            st.setDouble(1, idCiudad);
-            st.setDate(2, new Date(fechaCondicion.getTime().getTime()));
+            st.setLong(1, idCiudad);
+            st.setLong(3, fechaCondicion.getTimeInMillis());
             st.setInt(3, tipoPeticion);
 
             ResultSet rs = st.executeQuery();
-            Calendar calendar = Calendar.getInstance();
-
-            condicionesMeteorologicas.setVelViento(rs.getDouble("velViento"));
-            condicionesMeteorologicas.setTemperaturaMin(rs.getDouble("temperaturaMin"));
-            condicionesMeteorologicas.setTemperaturaMax(rs.getDouble("temperaturaMax"));
-            condicionesMeteorologicas.setTemperaturaActual(rs.getDouble("temperaturaActual"));
-            condicionesMeteorologicas.setSensacionTermica(rs.getDouble("sensacionTermica"));
-            condicionesMeteorologicas.setPresion(rs.getDouble("presion"));
-            condicionesMeteorologicas.setHumedad(rs.getDouble("humedad"));
-            condicionesMeteorologicas.setEstadoClima(rs.getString("estadoClima"));
-            condicionesMeteorologicas.setDirViento(rs.getDouble("dirViento"));
-            calendar.setTime(rs.getDate("fechaCondiciones"));
-            condicionesMeteorologicas.setFechaCondiciones(calendar);
-            calendar.setTime(rs.getDate("fechaPeticion"));
-            condicionesMeteorologicas.setFechaPeticion(calendar);
-
+            CondicionesMeteorologicas condicionesMeteorologicas = toCondicionMeteorologica(rs);
 
             System.out.println("Condiciones meteorologicas obtenidas correctamente.");
             connection.close();
+            rs.close();
+
             return condicionesMeteorologicas;
         }catch (SQLException e){
             System.out.println("Ha habido algun error al obtener las condiciones meteorologicas de la base de datos.");
-            return new CondicionesMeteorologicas();
+            return null;
         }catch (NullPointerException e){
             System.out.println("He habido algun error al conectarse a la base de datos.");
-            return new CondicionesMeteorologicas();
+            return null;
+        }
+    }
+
+    /**
+     * Permite obtener una prediccion de la base de datos.
+     *
+     * @param coordenadas Coordenadas de la localizacion deseada.
+     * @return Listado con las condiciones meteorologicas correspondientes.
+     */
+    public List<CondicionesMeteorologicas> getPrediccion(Coordenadas coordenadas){
+        try{
+            List<CondicionesMeteorologicas> prediccion = new ArrayList<>();
+            Connection connection = connect();
+            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE latitud = ? AND longitud = ? AND tipoPeticion = ? ORDER BY fechaPeticion DESC LIMIT 3";
+            PreparedStatement st = connection.prepareStatement(sentence);
+
+            st.setDouble(1, coordenadas.getLatitud());
+            st.setDouble(2, coordenadas.getLongitud());
+            st.setInt(3, 0);
+
+            ResultSet rs = st.executeQuery();
+            CondicionesMeteorologicas condicionesMeteorologicas;
+
+            while (rs.next()) {
+                condicionesMeteorologicas = toCondicionMeteorologica(rs);
+                prediccion.add(condicionesMeteorologicas);
+            }
+
+            connection.close();
+            rs.close();
+            return prediccion;
+        }catch (SQLException e){
+            System.out.println("Ha habido un error al obtener la prediccion de la base de datos.");
+            return new ArrayList<>();
+        }catch (NullPointerException e){
+            System.out.println("Ha habido un error al conectarse a la base de datos.");
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Permite obtener una prediccion meteorologica de una ciudad de la base de datos.
+     *
+     * @param idCiudad Ciudad deseada.
+     * @return Listado con la prediccion.
+     */
+    public List<CondicionesMeteorologicas> getPrediccion(long idCiudad){
+        try{
+            List<CondicionesMeteorologicas> prediccion = new ArrayList<>();
+            Connection connection = connect();
+            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE idCiudad = ? AND tipoPeticion = ? ORDER BY fechaPeticion DESC LIMIT 3";
+            PreparedStatement st = connection.prepareStatement(sentence);
+
+            st.setDouble(1, idCiudad);
+            st.setInt(2, 0);
+
+            ResultSet rs = st.executeQuery();
+            CondicionesMeteorologicas condicionesMeteorologicas;
+
+            while (rs.next()) {
+                condicionesMeteorologicas = toCondicionMeteorologica(rs);
+                prediccion.add(condicionesMeteorologicas);
+            }
+
+            connection.close();
+            rs.close();
+            return prediccion;
+        }catch (SQLException e){
+            System.out.println("Ha habido un error al obtener la prediccion de la base de datos.");
+            return new ArrayList<>();
+        }catch (NullPointerException e){
+            System.out.println("Ha habido un error al conectarse a la base de datos.");
+            return new ArrayList<>();
         }
     }
 
@@ -342,13 +395,16 @@ public class GestionDB extends UnicastRemoteObject {
 
             st.setDouble(1, coordenadas.getLongitud());
             st.setDouble(2, coordenadas.getLatitud());
-            st.setDate(3, new Date(fechaCondicion.getTime().getTime()));
+            st.setLong(3, fechaCondicion.getTimeInMillis());
             st.setInt(4, tipoPeticion);
 
             ResultSet rs = st.executeQuery();
+            int exists = rs.getInt("condicion");
 
+            rs.close();
             connection.close();
-            return rs.getInt("condicion") > 0;
+
+            return exists > 0;
         }catch (SQLException e){
             System.out.println("Ha habdio algun error al obtener los datos de la base de datos");
             return false;
@@ -372,13 +428,16 @@ public class GestionDB extends UnicastRemoteObject {
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, idCiudad);
-            st.setDate(2, new Date(fechaCondicion.getTime().getTime()));
+            st.setLong(3, fechaCondicion.getTimeInMillis());
             st.setInt(3, tipoPeticion);
 
             ResultSet rs = st.executeQuery();
+            int exists = rs.getInt("condicion");
 
+            rs.close();
             connection.close();
-            return rs.getInt("condicion") > 0;
+
+            return exists > 0;
         }catch (SQLException e){
             System.out.println("Ha habdio algun error al obtener los datos de la base de datos");
             return false;
@@ -387,4 +446,31 @@ public class GestionDB extends UnicastRemoteObject {
             return false;
         }
     }
+
+    /**
+     * Permite obtener transformar la informacion de la base de datos en condiciones meteorologicas.
+     * @param rs ResultSet necesario para obtener los datos de la base de datos.
+     * @return La condicion meteorologica.
+     * @throws SQLException En el caso de que haya algun error con la base de datos.
+     */
+    private CondicionesMeteorologicas toCondicionMeteorologica(ResultSet rs) throws SQLException {
+        Calendar calendar = Calendar.getInstance();
+        CondicionesMeteorologicas condicionesMeteorologicas = new CondicionesMeteorologicas();
+
+        condicionesMeteorologicas.setVelViento(rs.getDouble("velViento"));
+        condicionesMeteorologicas.setTemperaturaMin(rs.getDouble("temperaturaMin"));
+        condicionesMeteorologicas.setTemperaturaMax(rs.getDouble("temperaturaMax"));
+        condicionesMeteorologicas.setTemperaturaActual(rs.getDouble("temperaturaActual"));
+        condicionesMeteorologicas.setSensacionTermica(rs.getDouble("sensacionTermica"));
+        condicionesMeteorologicas.setPresion(rs.getDouble("presion"));
+        condicionesMeteorologicas.setHumedad(rs.getDouble("humedad"));
+        condicionesMeteorologicas.setEstadoClima(rs.getString("estadoClima"));
+        condicionesMeteorologicas.setDirViento(rs.getDouble("dirViento"));
+        calendar.setTimeInMillis(rs.getLong("fechaCondiciones"));
+        condicionesMeteorologicas.setFechaCondiciones(calendar);
+        calendar.setTimeInMillis(rs.getLong("fechaPeticion"));
+        condicionesMeteorologicas.setFechaPeticion(calendar);
+        return condicionesMeteorologicas;
+    }
+
 }
