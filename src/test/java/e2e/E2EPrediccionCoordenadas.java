@@ -77,4 +77,25 @@ public class E2EPrediccionCoordenadas extends E2ETestBed{
 //
 //        // Then:    espero que se lance una excepcion
 //    }
+
+    @Test
+    public void savePrediccionCoordenadasTest(){
+        // Given:   una coordenadas
+        double latitud = 91.0;
+        double longitud = 181.0;
+        Coordenadas coor = new Coordenadas(latitud, longitud);
+
+        // Given:   una fecha y hora para la prediccion
+        Calendar fecha = GregorianCalendar.getInstance();
+        fecha.add(Calendar.DAY_OF_MONTH, 3);
+        fecha.set(Calendar.HOUR_OF_DAY, 16);
+
+        // When:    el usuario busca esa ciudad
+        //          la aplicacion hace una peticion al servicio meteorologico y las guarda en la base de datos
+        List<CondicionesMeteorologicas> condicionesCiudad = weatherApp.getPrediccion(coor);
+
+        for (CondicionesMeteorologicas cm : condicionesCiudad){
+            gestionDB.registrarCondicionesMeteorologicas(cm, coor, 0);
+        }
+    }
 }
