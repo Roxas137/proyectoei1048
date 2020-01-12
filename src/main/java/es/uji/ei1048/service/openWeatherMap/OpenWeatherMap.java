@@ -161,6 +161,8 @@ public class OpenWeatherMap implements IWeatherService {
 
     @Override
     public boolean checkCity(String city){
+        System.out.println(city);
+        System.out.println(cities.values());
         return this.cities.containsValue(city.toLowerCase());
     }
 

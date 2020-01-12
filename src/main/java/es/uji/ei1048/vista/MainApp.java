@@ -12,8 +12,8 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
-    //private IWeatherService service = new OpenWeatherMap();
-    //private IWeatherAppFacade weatherAppFacade = new WeatherAppFacade(service);
+    private IWeatherService service = new OpenWeatherMap();
+    private IWeatherAppFacade weatherAppFacade = new WeatherAppFacade(service);
     private Stage primaryStage;
 
     public static void main(String[] args) {
@@ -26,7 +26,7 @@ public class MainApp extends Application {
 
         // Creamos el loader de la pagina inicial.
         FXMLLoader landingPage = new FXMLLoader();
-        landingPage.setLocation(MainApp.class.getResource("es.uji.ei1048/vista/escenas/landingPage.fxml"));
+        landingPage.setLocation(MainApp.class.getClassLoader().getResource("es.uji.ei1048/vista/escenas/landingPage.fxml"));
         System.out.println(landingPage.getLocation());
 
         this.primaryStage.setTitle("My Weather App");
@@ -40,6 +40,7 @@ public class MainApp extends Application {
         // Pasamos la referencia del main al controlador.
         LandingPageController landingController = landingPage.getController();
         landingController.setMainApp(this);
+        landingController.setWeatherAppFacade(weatherAppFacade);
 
         // Mostramos la ventana.
         this.primaryStage.show();
