@@ -81,8 +81,8 @@ public class E2EPrediccionCoordenadas extends E2ETestBed{
     @Test
     public void savePrediccionCoordenadasTest(){
         // Given:   una coordenadas
-        double latitud = 91.0;
-        double longitud = 181.0;
+        double latitud = 89.0;
+        double longitud = 150.0;
         Coordenadas coor = new Coordenadas(latitud, longitud);
 
         // Given:   una fecha y hora para la prediccion
@@ -97,5 +97,15 @@ public class E2EPrediccionCoordenadas extends E2ETestBed{
         for (CondicionesMeteorologicas cm : condicionesCiudad){
             gestionDB.registrarCondicionesMeteorologicas(cm, coor, 0);
         }
+    }
+
+    @Test
+    public void getPrediccionCoordenadasTest(){
+        // Given:   una coordenadas
+        double latitud = 89.0;
+        double longitud = 150.0;
+        Coordenadas coor = new Coordenadas(latitud, longitud);
+
+        gestionDB.getPrediccion(coor);
     }
 }

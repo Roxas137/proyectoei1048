@@ -85,10 +85,19 @@ public class E2EPrediccionCiudad extends E2ETestBed {
 
         // When:    el usuario busca esa ciudad
         //          la aplicacion hace una peticion al servicio meteorologico y guarda los resultados
-        List<CondicionesMeteorologicas> condicionesCiudad = weatherApp.getPrediccion(ciudad);
+        List<CondicionesMeteorologicas> condicionesCiudad = weatherApp.getPrediccion(cities.get(Long.parseLong(ciudad))+"#es");
 
         for (CondicionesMeteorologicas cm : condicionesCiudad){
-            gestionDB.registrarCondicionesMeteorologicas(cm, Long.parseLong(ciudad), 0);
+            gestionDB.registrarCondicionesMeteorologicas(cm, Long.parseLong(ciudad), Constants.PETITION_PREDICTION);
         }
+    }
+
+    @Test
+    public void getPrediccionCiudadTest(){
+        // Given:   una ciudad (String)
+        String ciudad = Constants.ID_CASTELLON;
+
+        //Saca la ultima prediccion realizada sobre la ciudad dada.
+        gestionDB.getPrediccion(Long.parseLong(ciudad));
     }
 }

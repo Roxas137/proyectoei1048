@@ -562,7 +562,7 @@ public class GestionDB extends UnicastRemoteObject {
         try{
             List<CondicionesMeteorologicas> prediccion = new ArrayList<>();
             Connection connection = connect();
-            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE latitud = ? AND longitud = ? AND tipoPeticion = ? ORDER BY fechaPeticion DESC LIMIT 3";
+            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE latitud = ? AND longitud = ? AND tipoPeticion = ? ORDER BY fechaPeticion DESC LIMIT 5";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, coordenadas.getLatitud());
@@ -599,7 +599,7 @@ public class GestionDB extends UnicastRemoteObject {
         try{
             List<CondicionesMeteorologicas> prediccion = new ArrayList<>();
             Connection connection = connect();
-            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE idCiudad = ? AND tipoPeticion = ? ORDER BY fechaPeticion DESC LIMIT 3";
+            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE idCiudad = ? AND tipoPeticion = ? ORDER BY fechaPeticion DESC LIMIT 5";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, idCiudad);

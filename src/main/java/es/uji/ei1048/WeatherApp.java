@@ -110,7 +110,7 @@ public class WeatherApp {
             List<CondicionesMeteorologicas> prediccionGuardada;
             prediccionGuardada = gestionDB.getPrediccion(coor);
 
-            if (comparaFechaPeticiones(fechaPeticion, prediccionGuardada.get(0))) {
+            if (!prediccionGuardada.isEmpty() && comparaFechaPeticiones(fechaPeticion, prediccionGuardada.get(0))) {
                 return prediccionGuardada;
             }
 
