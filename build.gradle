@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
 group 'es.uji.ei1048'
@@ -17,3 +19,10 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
 }
+
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+mainClassName = "$moduleName/es.uji.ei1048.vista.MainApp"

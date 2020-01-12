@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.GridPane;
 
 public class LandingPageController {
 
@@ -34,6 +35,12 @@ public class LandingPageController {
     // Prediccion: 1,2,3
     public void consultaTiempo() {
 
+    }
+
+    private void gridPaneConstructor() {
+        GridPane panel = new GridPane();
+        panel.addColumn(0);
+        panel.addRow(0);
     }
 
 }
