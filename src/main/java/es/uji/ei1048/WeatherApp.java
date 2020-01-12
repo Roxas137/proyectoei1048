@@ -5,6 +5,9 @@ import es.uji.ei1048.gestionDB.GestionDB;
 import es.uji.ei1048.object.CondicionesMeteorologicas;
 import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.service.IWeatherService;
+import es.uji.ei1048.service.openWeatherMap.OpenWeatherMapTypeId;
+import es.uji.ei1048.utils.Constants;
+import es.uji.ei1048.utils.Unit;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -18,29 +21,29 @@ public class WeatherApp {
         try {
             gestionDB = new GestionDB();
         } catch (RemoteException e) {
-            System.out.println("Ha ocurrido un error al instanciar la base de datos.");
+            e.printStackTrace();
         }
     }
 
-    public CondicionesMeteorologicas getCurrentWeather(IWeatherService service) {
+    public CondicionesMeteorologicas getCurrentWeather(IWeatherService service, String ciudad) {
         try {
-            Calendar fechaCondicion = service.getFechaCondicion();
-            Calendar fechaPeticion = service.getFechaPeticion();
-            long idCiudad = service.getIdCiudadEscogido();
-            Coordenadas coordenadas = service.getCoordenadasEscogidas();
+            Calendar fechaCondicion = Calendar.getInstance();
+            Calendar fechaPeticion = Calendar.getInstance();
+            long idCiudad = service.getIdByCity(ciudad);
+            String[] place = new String[1];
+            place[0] = String.valueOf(idCiudad);
 
             CondicionesMeteorologicas condicionesGuardadas;
-            if (idCiudad == -500){
-                condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, coordenadas, 1);
-            }else{
-                condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, idCiudad, 1);
+
+            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, idCiudad, Constants.PETITION_CURRENT);
+
+            if (comparaFechaPeticiones(fechaPeticion, condicionesGuardadas)) {
+                return condicionesGuardadas;
             }
 
-            if (comparaFechaPeticiones(fechaPeticion, condicionesGuardadas)) return condicionesGuardadas;
-
-            String jsonResult = service.getCurrentWeather();
+            String jsonResult = service.getCurrentWeather(OpenWeatherMapTypeId.ID, place, Unit.CELSIUS);
             CondicionesMeteorologicas condiciones = fromJsonToObject(jsonResult);
-            updateDatabase(condiciones, idCiudad, 1, coordenadas);
+            updateDatabase(condiciones, idCiudad, Constants.PETITION_CURRENT, null);
             return condiciones;
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,20 +60,22 @@ public class WeatherApp {
             Coordenadas coordenadas = service.getCoordenadasEscogidas();
 
             List<CondicionesMeteorologicas> prediccionGuardada;
-            if (idCiudad == -500){
+            if (idCiudad == -500) {
                 prediccionGuardada = gestionDB.getPrediccion(coordenadas);
-            }else{
+            } else {
                 prediccionGuardada = gestionDB.getPrediccion(idCiudad);
             }
 
-            if (comparaFechaPeticiones(fechaPeticion, prediccionGuardada.get(0))) return prediccionGuardada;
+            if (comparaFechaPeticiones(fechaPeticion, prediccionGuardada.get(0))) {
+                return prediccionGuardada;
+            }
 
             String jsonResult = service.getPredictionWeather();
             List<CondicionesMeteorologicas> condiciones = fromJsonToList(jsonResult);
             setPetitionDate(condiciones);
             // TODO: 27/12/2019 Convertir a una unica prediccion por dia
             for (CondicionesMeteorologicas condicion : condiciones) {
-                updateDatabase(condicion, idCiudad, 0, coordenadas);
+                updateDatabase(condicion, idCiudad, Constants.PETITION_PREDICTION, coordenadas);
             }
             return condiciones;
         } catch (IOException e) {
@@ -226,9 +231,9 @@ public class WeatherApp {
     }
 
     private void updateDatabase(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion, Coordenadas coordenadas) {
-        if (idCiudad == -500){
+        if (idCiudad == -500) {
             gestionDB.registrarCondicionesMeteorologicas(condiciones, coordenadas, tipoPeticion);
-        }else{
+        } else {
             gestionDB.registrarCondicionesMeteorologicas(condiciones, idCiudad, tipoPeticion);
         }
     }
@@ -246,12 +251,12 @@ public class WeatherApp {
     /**
      * Compara la fecha de la peticion que se quiere realizar con la fecha de las condiciones guardadas.
      *
-     * @param fechaPeticion fecha de la peticion que se quiere realizar.
+     * @param fechaPeticion        fecha de la peticion que se quiere realizar.
      * @param condicionesGuardadas condiciones obtenidas de la base de datos.
      * @return Si la diferencia entre ambas fechas es de menos de media hora devuelve true en caso contrario, false.
      */
     private boolean comparaFechaPeticiones(Calendar fechaPeticion, CondicionesMeteorologicas condicionesGuardadas) {
-        if (condicionesGuardadas != null){
+        if (condicionesGuardadas != null) {
             Calendar fechaPeticionGuardada = condicionesGuardadas.getFechaPeticion();
             //Si la diferencia es de menos de media hora entonces se escogen las guardadas.
             return fechaPeticion.getTimeInMillis() - fechaPeticionGuardada.getTimeInMillis() <= 1800000;

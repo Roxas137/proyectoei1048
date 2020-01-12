@@ -38,7 +38,7 @@ public class OpenWeatherMap implements IWeatherService {
         return getCurrentWeather(typeId, place, unit);
     }
 
-    private String getCurrentWeather(OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException {
+    public String getCurrentWeather(OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException {
         URL url = getUrl(Constants.PETITION_CURRENT, typeId, place, unit);
         String readLine = "";
 
@@ -177,5 +177,11 @@ public class OpenWeatherMap implements IWeatherService {
 
     public Calendar getFechaPeticion() {
         return fechaPeticion;
+    }
+
+    @Override
+    public long getIdByCity(String ciudad) {
+        // TODO: 12/01/2020 Adrian, esto es tuyo
+        return 0;
     }
 }
