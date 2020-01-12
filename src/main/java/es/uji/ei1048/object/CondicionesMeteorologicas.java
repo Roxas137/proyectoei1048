@@ -128,16 +128,16 @@ public class CondicionesMeteorologicas {
         this.estadoClima = estadoClima;
     }
 
-    public double getVelViento() {
-        return velViento;
+    public Double getVelViento() {
+        return this.velViento;
     }
 
     public void setVelViento(double velViento) {
         this.velViento = velViento;
     }
 
-    public double getDirViento() {
-        return dirViento;
+    public Double getDirViento() {
+        return this.dirViento;
     }
 
     public void setDirViento(double dirViento) {

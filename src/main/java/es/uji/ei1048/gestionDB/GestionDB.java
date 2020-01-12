@@ -447,7 +447,7 @@ public class GestionDB extends UnicastRemoteObject {
             String sentence = "INSERT INTO CondicionesMeteorologicas(" +
                     "longitud, latitud, idCiudad, temperaturaActual, temperaturaMin, temperaturaMax, estadoClima, velViento" +
                     ", dirViento, presion, humedad, fechaCondiciones, fechaPeticion, tipoPeticion)" +
-                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, -500);
