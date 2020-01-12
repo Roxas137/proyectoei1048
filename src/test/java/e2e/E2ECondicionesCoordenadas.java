@@ -5,7 +5,7 @@ import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.exceptions.InvalidCoordenatesException;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class E2ECondicionesCoordenadas extends E2ETestBed {
 
@@ -43,5 +43,18 @@ public class E2ECondicionesCoordenadas extends E2ETestBed {
 
         // Then:    espero que se lance una excepcion
 
+    }
+
+
+    @Test
+    public void saveCondicionesCoordenadasTest(){
+        //Given unas condiciones meteorologicas y unas coordenadas validas
+        Coordenadas coordenadas = new Coordenadas();
+        coordenadas.setLatitud(90);
+        coordenadas.setLongitud(150.5);
+        CondicionesMeteorologicas cm = weatherApp.getCondicionesActuales(coordenadas);
+
+
+        assertTrue(gestionDB.registrarCondicionesMeteorologicas(cm, coordenadas, 1));
     }
 }

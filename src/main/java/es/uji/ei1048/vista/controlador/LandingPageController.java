@@ -2,10 +2,7 @@ package es.uji.ei1048.vista.controlador;
 
 import es.uji.ei1048.vista.MainApp;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 public class LandingPageController {
@@ -27,6 +24,26 @@ public class LandingPageController {
 
     private MainApp mainApp;
 
+
+    //temp
+    private Double temperaturaActual;
+    //feels_like
+    private Double sensacionTermica;
+    //temp_min
+    private Double temperaturaMin;
+    //temp_max
+    private Double temperaturaMax;
+    //description
+    private String estadoClima;
+    //speed
+    private Double velViento;
+    //deg
+    private Double dirViento;
+    //pressure
+    private Double presion;
+    //humidity
+    private Double humedad;
+
     public void setMainApp(MainApp mainApp){
         this.mainApp = mainApp;
     }
@@ -39,8 +56,15 @@ public class LandingPageController {
 
     private void gridPaneConstructor() {
         GridPane panel = new GridPane();
-        panel.addColumn(0);
-        panel.addRow(0);
+        panel.add(new Label("Temperatura: "),0,0);
+        panel.add(new Label("Sensacion termica: "),0,0);
+        panel.add(new Label("Temperatura minima: "),0,0);
+        panel.add(new Label("Temperatura maxima: "),0,0);
+        panel.add(new Label("Estado: "),0,0);
+        panel.add(new Label("Velocidad del viento: "),0,0);
+        panel.add(new Label("Direccion del viento: "),0,0);
+        panel.add(new Label("Presion: "),0,0);
+        panel.add(new Label("Humedad: "),0,0);
     }
 
 }

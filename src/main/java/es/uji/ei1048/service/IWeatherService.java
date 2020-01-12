@@ -19,4 +19,6 @@ public interface IWeatherService {
     Coordenadas getCoordenadasEscogidas();
     Calendar getFechaCondicion();
     Calendar getFechaPeticion();
+
+    long getIdByCity(String ciudad);
 }

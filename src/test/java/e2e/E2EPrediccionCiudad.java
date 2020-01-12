@@ -72,4 +72,23 @@ public class E2EPrediccionCiudad extends E2ETestBed {
 
         // Then:    espero que se lance una excepcion
     }*/
+
+    @Test
+    public void savePrediccionCiudadTest(){
+        // Given:   una ciudad (String)
+        String ciudad = Constants.ID_CASTELLON;
+
+        // Given:   una fecha y hora para la prediccion
+        Calendar fecha = GregorianCalendar.getInstance();
+        fecha.add(Calendar.DAY_OF_MONTH, 3);
+        fecha.set(Calendar.HOUR_OF_DAY, 16);
+
+        // When:    el usuario busca esa ciudad
+        //          la aplicacion hace una peticion al servicio meteorologico y guarda los resultados
+        List<CondicionesMeteorologicas> condicionesCiudad = weatherApp.getPrediccion(ciudad);
+
+        for (CondicionesMeteorologicas cm : condicionesCiudad){
+            gestionDB.registrarCondicionesMeteorologicas(cm, Long.parseLong(ciudad), 0);
+        }
+    }
 }

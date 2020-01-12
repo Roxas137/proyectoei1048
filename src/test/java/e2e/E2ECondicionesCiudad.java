@@ -1,10 +1,13 @@
 package e2e;
 
 import es.uji.ei1048.exceptions.InvalidCityException;
+import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.utils.Constants;
 import es.uji.ei1048.object.CondicionesMeteorologicas;
 
 import org.junit.Test;
+
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -33,5 +36,12 @@ public class E2ECondicionesCiudad extends E2ETestBed {
 
         // Then:    espero que se lance una excepcion
 
+    }
+
+    @Test
+    public void saveCondicionesCoordenadasTest(){
+        //Given un id de una Ciudad y unas condiciones meteorologicas
+        CondicionesMeteorologicas cm = weatherApp.getCondicionesActuales(Constants.ID_CASTELLON);
+        assertTrue(gestionDB.registrarCondicionesMeteorologicas(cm, Long.parseLong(Constants.ID_CASTELLON), 1));
     }
 }

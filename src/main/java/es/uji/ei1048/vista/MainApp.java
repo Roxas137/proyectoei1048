@@ -12,8 +12,8 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
-    private IWeatherService service = new OpenWeatherMap();
-    private IWeatherAppFacade weatherAppFacade = new WeatherAppFacade(service);
+    //private IWeatherService service = new OpenWeatherMap();
+    //private IWeatherAppFacade weatherAppFacade = new WeatherAppFacade(service);
     private Stage primaryStage;
 
     public static void main(String[] args) {

@@ -11,6 +11,7 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven {url "http://dl.bintray.com/ipgeolocation/ipgeolocation"}
 }
 
 dependencies {
@@ -26,3 +27,10 @@ javafx {
 }
 
 mainClassName = "$moduleName/es.uji.ei1048.vista.MainApp"
+dependencies {
+    compile 'com.maxmind.geoip2:geoip2:2.13.0'
+}
+
+dependencies {
+    compile group:'org.xerial', name:'sqlite-jdbc', version:'3.8.11.2'
+}
