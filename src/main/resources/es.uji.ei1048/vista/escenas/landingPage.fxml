@@ -44,11 +44,11 @@
             </HBox>
             <AnchorPane style="-fx-background-color: rgba(255,255,255,0.5);" VBox.vgrow="ALWAYS">
                <children>
-                  <TabPane prefHeight="200.0" prefWidth="200.0" stylesheets="@../style/MyWeatherStyle.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" stylesheets="@../style/MyWeatherStyle.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <tabs>
                         <Tab text="Consulta actual">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                              <AnchorPane fx:id="panelActual" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                            </content>
                         </Tab>
                       <Tab text="Tiempo en fav 1">
@@ -106,7 +106,7 @@
                      </children>
                   </VBox>
                   <ChoiceBox fx:id="prediccion" prefWidth="200.0" />
-                  <Button fx:id="botonConsulta" disable="true" mnemonicParsing="false" onAction="#consultaTiempo" stylesheets="@../style/MyWeatherStyle.css" text="Consultar el tiempo" />
+                  <Button fx:id="botonConsulta" mnemonicParsing="false" onAction="#consultaTiempo" stylesheets="@../style/MyWeatherStyle.css" text="Consultar el tiempo" />
                </children>
             </HBox>
          </children>

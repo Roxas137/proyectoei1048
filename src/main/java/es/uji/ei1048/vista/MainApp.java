@@ -9,7 +9,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class MainApp extends Application {
 
@@ -27,12 +26,10 @@ public class MainApp extends Application {
 
         // Creamos el loader de la pagina inicial.
         FXMLLoader landingPage = new FXMLLoader();
-        landingPage.setLocation(MainApp.class.getResource("escenas/landingPage.fxml"));
+        landingPage.setLocation(MainApp.class.getClassLoader().getResource("es.uji.ei1048/vista/escenas/landingPage.fxml"));
+        System.out.println(landingPage.getLocation());
 
-        // Ajustamos parametros de la ventana inicial.
-        this.primaryStage.initStyle(StageStyle.DECORATED);
-        this.primaryStage.setResizable(false);
-        this.primaryStage.setTitle("UJI ARS");
+        this.primaryStage.setTitle("My Weather App");
 
         // Cargamos la escena.
         Scene landingScene = new Scene(landingPage.load());
@@ -43,6 +40,7 @@ public class MainApp extends Application {
         // Pasamos la referencia del main al controlador.
         LandingPageController landingController = landingPage.getController();
         landingController.setMainApp(this);
+        landingController.setWeatherAppFacade(weatherAppFacade);
 
         // Mostramos la ventana.
         this.primaryStage.show();
