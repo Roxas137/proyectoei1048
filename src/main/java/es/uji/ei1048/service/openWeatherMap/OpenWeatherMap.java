@@ -38,6 +38,7 @@ public class OpenWeatherMap implements IWeatherService {
         return getCurrentWeather(typeId, place, unit);
     }
 
+    @Override
     public String getCurrentWeather(OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException {
         URL url = getUrl(Constants.PETITION_CURRENT, typeId, place, unit);
         String readLine = "";

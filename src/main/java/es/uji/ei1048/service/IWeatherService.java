@@ -1,6 +1,7 @@
 package es.uji.ei1048.service;
 
 import es.uji.ei1048.object.Coordenadas;
+import es.uji.ei1048.service.openWeatherMap.OpenWeatherMapTypeId;
 import es.uji.ei1048.utils.Unit;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -14,6 +15,7 @@ public interface IWeatherService {
     String getCurrentWeather() throws IOException;
     String getPredictionWeather() throws IOException;
     boolean checkCity(String city) throws NotImplementedException;
+    String getCurrentWeather(OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException;
 
     long getIdCiudadEscogido();
     Coordenadas getCoordenadasEscogidas();
