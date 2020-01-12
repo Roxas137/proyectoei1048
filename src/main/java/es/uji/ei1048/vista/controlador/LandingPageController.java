@@ -60,22 +60,22 @@ public class LandingPageController {
     // Prediccion: 1,2,3
     public void consultaTiempo() {
         CondicionesMeteorologicas condicionesMeteorologicas = weatherAppFacade.getCondicionesActuales(ciudad.getText() + "#es");
-        GridPane condiciones = gridPaneConstructor(condicionesMeteorologicas);
+        GridPane condiciones = gridPaneConstructor(/*condicionesMeteorologicas*/);
         panelActual.getChildren().add(condiciones);
 
     }
 
-    private GridPane gridPaneConstructor(CondicionesMeteorologicas condiciones) {
+    private GridPane gridPaneConstructor(/*CondicionesMeteorologicas condiciones*/) {
         GridPane panel = new GridPane();
-        panel.add(new Label("Temperatura: " + condiciones.getTemperaturaActual()), 0, 0);
-        panel.add(new Label("Sensacion termica: " + condiciones.getSensacionTermica()), 0, 1);
-        panel.add(new Label("Temperatura minima: " + condiciones.getTemperaturaMin()), 0, 2);
-        panel.add(new Label("Temperatura maxima: " + condiciones.getTemperaturaMax()), 1, 0);
-        panel.add(new Label("Estado: " + condiciones.getEstadoClima()), 1, 1);
-        panel.add(new Label("Velocidad del viento: " + condiciones.getVelViento()), 1, 2);
-        panel.add(new Label("Direccion del viento: " + condiciones.getDirViento()), 2, 0);
-        panel.add(new Label("Presion: " + condiciones.getPresion()), 2, 1);
-        panel.add(new Label("Humedad: " + condiciones.getHumedad()), 2, 2);
+        panel.add(new Label("Temperatura: "/* + condiciones.getTemperaturaActual()*/), 0, 0);
+        panel.add(new Label("Sensacion termica: "/* + condiciones.getSensacionTermica()*/), 0, 1);
+        panel.add(new Label("Temperatura minima: "/* + condiciones.getTemperaturaMin()*/), 0, 2);
+        panel.add(new Label("Temperatura maxima: " /*+ condiciones.getTemperaturaMax()*/), 1, 0);
+        panel.add(new Label("Estado: "/* + condiciones.getEstadoClima()*/), 1, 1);
+        panel.add(new Label("Velocidad del viento: "/* + condiciones.getVelViento()*/), 1, 2);
+        panel.add(new Label("Direccion del viento: "/* + condiciones.getDirViento()*/), 2, 0);
+        panel.add(new Label("Presion: "/* + condiciones.getPresion()*/), 2, 1);
+        panel.add(new Label("Humedad: "/* + condiciones.getHumedad()*/), 2, 2);
         return panel;
     }
 
