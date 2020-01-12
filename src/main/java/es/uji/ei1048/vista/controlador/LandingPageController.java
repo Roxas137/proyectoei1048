@@ -90,8 +90,8 @@ public class LandingPageController {
         this.temperaturaMin = "Temperatura minima: " + condiciones.getTemperaturaMin();
         this.temperaturaMax = "Temperatura maxima: " + condiciones.getTemperaturaMax();
         this.estadoClima = "Estado: " + condiciones.getEstadoClima();
-        this.velViento = "Velocidad del viento: ";// + condiciones.getVelViento();
-        this.dirViento = "Direccion del viento: ";// + condiciones.getDirViento();
+        this.velViento = "Velocidad del viento: " + condiciones.getVelViento();
+        this.dirViento = "Direccion del viento: " + condiciones.getDirViento();
         this.presion = "Presion: " + condiciones.getPresion();
         this.humedad = "Humedad: " + condiciones.getHumedad();
 
