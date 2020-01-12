@@ -25,17 +25,17 @@ public class WeatherApp {
         }
     }
 
-    public CondicionesMeteorologicas getCurrentWeather(IWeatherService service/*, String ciudad*/) {
+    public CondicionesMeteorologicas getCurrentWeather(IWeatherService service, String ciudad) {
         try {
             Calendar fechaCondicion = Calendar.getInstance();
             Calendar fechaPeticion = Calendar.getInstance();
-            //long idCiudad = service.getIdByCity(ciudad);
+            long idCiudad = service.getIdByCity(ciudad);
             String[] place = new String[1];
-            //place[0] = String.valueOf(idCiudad);
+            place[0] = String.valueOf(idCiudad);
 
             CondicionesMeteorologicas condicionesGuardadas;
 
-            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, Long.parseLong(Constants.ID_CASTELLON)/*idCiudad*/, Constants.PETITION_CURRENT);
+            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, idCiudad, Constants.PETITION_CURRENT);
 
             if (comparaFechaPeticiones(fechaPeticion, condicionesGuardadas)) {
                 return condicionesGuardadas;
@@ -43,7 +43,7 @@ public class WeatherApp {
 
             String jsonResult = service.getCurrentWeather(OpenWeatherMapTypeId.ID, place, Unit.CELSIUS);
             CondicionesMeteorologicas condiciones = fromJsonToObject(jsonResult);
-            updateDatabase(condiciones, Long.parseLong(Constants.ID_CASTELLON)/*idCiudad*/, Constants.PETITION_CURRENT, null);
+            updateDatabase(condiciones,idCiudad, Constants.PETITION_CURRENT, null);
             return condiciones;
         } catch (IOException e) {
             e.printStackTrace();

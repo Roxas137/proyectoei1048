@@ -2,6 +2,7 @@ package es.uji.ei1048.vista;
 
 import es.uji.ei1048.facade.IWeatherAppFacade;
 import es.uji.ei1048.facade.WeatherAppFacade;
+import es.uji.ei1048.jsonTreatment.CityListReader;
 import es.uji.ei1048.service.IWeatherService;
 import es.uji.ei1048.service.openWeatherMap.OpenWeatherMap;
 import es.uji.ei1048.vista.controlador.LandingPageController;
@@ -9,6 +10,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MainApp extends Application {
 
@@ -22,6 +27,13 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
+        Map<Long, String> cities = CityListReader.initialize();
+        List<String> listadoCiudadesPais = new ArrayList<>();
+        for (String cityCountry : cities.values()){
+            listadoCiudadesPais.add(cityCountry.replace("#", ", "));
+        }
+
         this.primaryStage = primaryStage;
 
         // Creamos el loader de la pagina inicial.
@@ -41,6 +53,7 @@ public class MainApp extends Application {
         LandingPageController landingController = landingPage.getController();
         landingController.setMainApp(this);
         landingController.setWeatherAppFacade(weatherAppFacade);
+        landingController.setCiudades(listadoCiudadesPais);
 
         // Mostramos la ventana.
         this.primaryStage.show();

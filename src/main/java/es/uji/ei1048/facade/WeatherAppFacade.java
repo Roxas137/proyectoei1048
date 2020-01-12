@@ -29,11 +29,10 @@ public class WeatherAppFacade implements IWeatherAppFacade {
     public CondicionesMeteorologicas getCondicionesActuales() {
 
         // TODO: 27/12/2019 Usado para debug, borrar
-        CondicionesMeteorologicas condicionesMeteorologicas = weatherApp.getCurrentWeather(service);
-        String jsonResult = gson.toJson(condicionesMeteorologicas);
-        System.out.println(jsonResult);
+        //CondicionesMeteorologicas condicionesMeteorologicas = weatherApp.getCurrentWeather(service);
+        //String jsonResult = gson.toJson(condicionesMeteorologicas);
 
-        return condicionesMeteorologicas;
+        return null;//condicionesMeteorologicas;
     }
 
     @Override
@@ -48,14 +47,14 @@ public class WeatherAppFacade implements IWeatherAppFacade {
     @Override
     public CondicionesMeteorologicas getCondicionesActuales(String ciudad) throws InvalidCityException {
         checkCity(ciudad);
-        return weatherApp.getCurrentWeather(service);
+        return weatherApp.getCurrentWeather(service, ciudad);
     }
 
     @Override
     public CondicionesMeteorologicas getCondicionesActuales(Coordenadas coord) throws InvalidCoordenatesException {
         // Comprobar ciudad valida
         checkCoordenates(coord);
-        return weatherApp.getCurrentWeather(service);
+        return null; //weatherApp.getCurrentWeather(service);
     }
 
     @Override
