@@ -13,6 +13,10 @@ public class Constants {
     public static final int PETITION_PREDICTION = 0;
     public static final int PETITION_CURRENT = 1;
 
+    // Place types
+    public static final int PLACE_CITY = 0;
+    public static final int PLACE_COORDENATES = 1;
+
     // ID Ciudades
     public static final String ID_CASTELLON = "6356995";
     public static final String ID_VALLADOLID = "6362308";
