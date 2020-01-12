@@ -5,6 +5,7 @@ import static es.uji.ei1048.utils.Constants.*;
 public class Coordenadas {
     private double latitud;
     private double longitud;
+    private String etiqueta;
 
     public Coordenadas() {
         latitud = 0.0;
@@ -31,6 +32,10 @@ public class Coordenadas {
     public void setLongitud(double longitud) {
         this.longitud = longitud;
     }
+
+    public String getEtiqueta(){ return this.etiqueta; }
+
+    public void setEtiqueta(String etiqueta){ this.etiqueta = etiqueta; }
 
     public boolean isValid() {
         return !(latitud < LATITUD_MINIMA || latitud > LATITUD_MAXIMA ||
