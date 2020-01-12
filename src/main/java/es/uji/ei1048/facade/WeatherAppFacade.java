@@ -48,14 +48,14 @@ public class WeatherAppFacade implements IWeatherAppFacade {
     @Override
     public CondicionesMeteorologicas getCondicionesActuales(String ciudad) throws InvalidCityException {
         checkCity(ciudad);
-        return weatherApp.getCurrentWeather(service, ciudad);
+        return weatherApp.getCurrentWeather(service);
     }
 
     @Override
     public CondicionesMeteorologicas getCondicionesActuales(Coordenadas coord) throws InvalidCoordenatesException {
         // Comprobar ciudad valida
         checkCoordenates(coord);
-        return weatherApp.getCurrentWeather(service, coord);
+        return weatherApp.getCurrentWeather(service);
     }
 
     @Override
