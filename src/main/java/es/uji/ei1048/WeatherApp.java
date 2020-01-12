@@ -226,8 +226,16 @@ public class WeatherApp {
         JsonElement data = JsonParser.parseString(jsonResult).getAsJsonObject().get("main");
 
         CondicionesMeteorologicas condiciones = gson.fromJson(data, CondicionesMeteorologicas.class);
+        setCurrentWind(condiciones, jsonResult);
         setPetitionDate(condiciones);
         return condiciones;
+    }
+
+    private void setCurrentWind(CondicionesMeteorologicas condiciones, String jsonResult) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        JsonElement wind = JsonParser.parseString(jsonResult).getAsJsonObject().get("wind");
+        condiciones = gson.fromJson(wind, CondicionesMeteorologicas.class);
     }
 
     private void updateDatabase(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion, Coordenadas coordenadas) {
