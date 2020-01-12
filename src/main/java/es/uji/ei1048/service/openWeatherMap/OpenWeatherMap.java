@@ -182,7 +182,13 @@ public class OpenWeatherMap implements IWeatherService {
 
     @Override
     public long getIdByCity(String ciudad) {
-        // TODO: 12/01/2020 Adrian, esto es tuyo
-        return 0;
+        long idCiudad = 0;
+        for (long id : cities.keySet()){
+            if (cities.get(id).equals(ciudad)){
+                idCiudad = id;
+                break;
+            }
+        }
+        return idCiudad;
     }
 }
