@@ -20,6 +20,7 @@ public class Constants {
     // ID Ciudades
     public static final String ID_CASTELLON = "6356995";
     public static final String ID_VALLADOLID = "6362308";
+    public static final Long NULL_CITY = -500L;
 
     // Condiciones minimas
     public static final int LATITUD_MINIMA = -90;

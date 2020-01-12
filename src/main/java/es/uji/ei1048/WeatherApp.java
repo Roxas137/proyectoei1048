@@ -25,17 +25,17 @@ public class WeatherApp {
         }
     }
 
-    public CondicionesMeteorologicas getCurrentWeather(IWeatherService service/*, String ciudad*/) {
+    public CondicionesMeteorologicas getCurrentWeatherByCity(IWeatherService service, String ciudad) {
         try {
             Calendar fechaCondicion = Calendar.getInstance();
             Calendar fechaPeticion = Calendar.getInstance();
-            //long idCiudad = service.getIdByCity(ciudad);
+            long idCiudad = service.getIdByCity(ciudad);
             String[] place = new String[1];
-            //place[0] = String.valueOf(idCiudad);
+            place[0] = String.valueOf(idCiudad);
 
             CondicionesMeteorologicas condicionesGuardadas;
 
-            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, Long.parseLong(Constants.ID_CASTELLON)/*idCiudad*/, Constants.PETITION_CURRENT);
+            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, idCiudad, Constants.PETITION_CURRENT);
 
             if (comparaFechaPeticiones(fechaPeticion, condicionesGuardadas)) {
                 return condicionesGuardadas;
@@ -43,7 +43,7 @@ public class WeatherApp {
 
             String jsonResult = service.getCurrentWeather(OpenWeatherMapTypeId.ID, place, Unit.CELSIUS);
             CondicionesMeteorologicas condiciones = fromJsonToObject(jsonResult);
-            updateDatabase(condiciones, Long.parseLong(Constants.ID_CASTELLON)/*idCiudad*/, Constants.PETITION_CURRENT, null);
+            updateDatabase(condiciones, idCiudad, Constants.PETITION_CURRENT, null);
             return condiciones;
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,20 +51,39 @@ public class WeatherApp {
         return null;
     }
 
-
-    public List<CondicionesMeteorologicas> getPredictionWeather(IWeatherService service) {
+    public CondicionesMeteorologicas getCurrentWeatherByCoordenates(IWeatherService service, Coordenadas coor) {
         try {
-            Calendar fechaCondicion = service.getFechaCondicion();
-            Calendar fechaPeticion = service.getFechaPeticion();
-            long idCiudad = service.getIdCiudadEscogido();
-            Coordenadas coordenadas = service.getCoordenadasEscogidas();
+            Calendar fechaCondicion = Calendar.getInstance();
+            Calendar fechaPeticion = Calendar.getInstance();
+            String[] place = new String[2];
+            place[0] = String.valueOf(coor.getLatitud());
+            place[1] = String.valueOf(coor.getLongitud());
+
+            CondicionesMeteorologicas condicionesGuardadas;
+
+            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, coor, Constants.PETITION_CURRENT);
+
+            if (comparaFechaPeticiones(fechaPeticion, condicionesGuardadas)) {
+                return condicionesGuardadas;
+            }
+
+            String jsonResult = service.getCurrentWeather(OpenWeatherMapTypeId.ID, place, Unit.CELSIUS);
+            CondicionesMeteorologicas condiciones = fromJsonToObject(jsonResult);
+            updateDatabase(condiciones, Constants.NULL_CITY, Constants.PETITION_CURRENT, coor);
+            return condiciones;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<CondicionesMeteorologicas> getPredictionWeatherByCity(IWeatherService service, String ciudad) {
+        try {
+            Calendar fechaPeticion = Calendar.getInstance();
+            long idCiudad = service.getIdByCity(ciudad);
 
             List<CondicionesMeteorologicas> prediccionGuardada;
-            if (idCiudad == -500) {
-                prediccionGuardada = gestionDB.getPrediccion(coordenadas);
-            } else {
-                prediccionGuardada = gestionDB.getPrediccion(idCiudad);
-            }
+            prediccionGuardada = gestionDB.getPrediccion(idCiudad);
 
             if (comparaFechaPeticiones(fechaPeticion, prediccionGuardada.get(0))) {
                 return prediccionGuardada;
@@ -73,9 +92,34 @@ public class WeatherApp {
             String jsonResult = service.getPredictionWeather();
             List<CondicionesMeteorologicas> condiciones = fromJsonToList(jsonResult);
             setPetitionDate(condiciones);
-            // TODO: 27/12/2019 Convertir a una unica prediccion por dia
+
             for (CondicionesMeteorologicas condicion : condiciones) {
-                updateDatabase(condicion, idCiudad, Constants.PETITION_PREDICTION, coordenadas);
+                updateDatabase(condicion, idCiudad, Constants.PETITION_PREDICTION, null);
+            }
+            return condiciones;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<CondicionesMeteorologicas> getPredictionWeatherByCoordenates(IWeatherService service, Coordenadas coor) {
+        try {
+            Calendar fechaPeticion = Calendar.getInstance();
+
+            List<CondicionesMeteorologicas> prediccionGuardada;
+            prediccionGuardada = gestionDB.getPrediccion(coor);
+
+            if (comparaFechaPeticiones(fechaPeticion, prediccionGuardada.get(0))) {
+                return prediccionGuardada;
+            }
+
+            String jsonResult = service.getPredictionWeather();
+            List<CondicionesMeteorologicas> condiciones = fromJsonToList(jsonResult);
+            setPetitionDate(condiciones);
+
+            for (CondicionesMeteorologicas condicion : condiciones) {
+                updateDatabase(condicion, Constants.NULL_CITY, Constants.PETITION_PREDICTION, coor);
             }
             return condiciones;
         } catch (IOException e) {
@@ -227,19 +271,25 @@ public class WeatherApp {
 
         CondicionesMeteorologicas condiciones = gson.fromJson(data, CondicionesMeteorologicas.class);
         setCurrentWind(condiciones, jsonResult);
+        setCurrentWeatherState(condiciones, jsonResult);
         setPetitionDate(condiciones);
         return condiciones;
     }
 
-    private void setCurrentWind(CondicionesMeteorologicas condiciones, String jsonResult) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private void setCurrentWeatherState(CondicionesMeteorologicas condiciones, String jsonResult) {
+        JsonElement data = JsonParser.parseString(jsonResult).getAsJsonObject().get("weather").getAsJsonArray().get(0);
+        String currentWeatherState = data.getAsJsonObject().get("main").getAsString();
+        condiciones.setEstadoClima(currentWeatherState);
+    }
 
+    private void setCurrentWind(CondicionesMeteorologicas condiciones, String jsonResult) {
         JsonElement wind = JsonParser.parseString(jsonResult).getAsJsonObject().get("wind");
-        condiciones = gson.fromJson(wind, CondicionesMeteorologicas.class);
+        condiciones.setDirViento(wind.getAsJsonObject().get("deg").getAsDouble());
+        condiciones.setVelViento(wind.getAsJsonObject().get("speed").getAsDouble());
     }
 
     private void updateDatabase(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion, Coordenadas coordenadas) {
-        if (idCiudad == -500) {
+        if (idCiudad.equals(Constants.NULL_CITY)) {
             gestionDB.registrarCondicionesMeteorologicas(condiciones, coordenadas, tipoPeticion);
         } else {
             gestionDB.registrarCondicionesMeteorologicas(condiciones, idCiudad, tipoPeticion);
