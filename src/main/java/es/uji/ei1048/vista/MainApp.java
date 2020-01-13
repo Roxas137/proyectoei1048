@@ -4,6 +4,7 @@ import es.uji.ei1048.facade.IWeatherAppFacade;
 import es.uji.ei1048.facade.WeatherAppFacade;
 import es.uji.ei1048.jsonTreatment.CityListReader;
 import es.uji.ei1048.object.Coordenadas;
+import es.uji.ei1048.object.LugarFavorito;
 import es.uji.ei1048.service.IWeatherService;
 import es.uji.ei1048.service.openWeatherMap.OpenWeatherMap;
 import es.uji.ei1048.vista.controlador.EtiquetaController;
@@ -21,12 +22,14 @@ import java.util.Map;
 
 public class MainApp extends Application {
 
-    private IWeatherService service = new OpenWeatherMap();
-    private IWeatherAppFacade weatherAppFacade = new WeatherAppFacade(service);
+    private IWeatherService service;
+    private IWeatherAppFacade weatherAppFacade;
     private Stage primaryStage;
     Map<Long, String> cities;
     private String ciudadFav;
     private Coordenadas coordFav;
+    private Stage stageEtiqueta;
+    private LandingPageController landingController;
 
     public static void main(String[] args) {
         launch(args);
@@ -35,6 +38,8 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        service = new OpenWeatherMap();
+        weatherAppFacade = new WeatherAppFacade(service);
         // Preparamos la lista de las ciudades
         cities = service.getCities();
         List<String> listadoCiudadesPais = new ArrayList<>();
@@ -58,10 +63,11 @@ public class MainApp extends Application {
         this.primaryStage.setScene(landingScene);
 
         // Pasamos la referencia del main al controlador.
-        LandingPageController landingController = landingPage.getController();
+        landingController = landingPage.getController();
         landingController.setMainApp(this);
         landingController.setWeatherAppFacade(weatherAppFacade);
         landingController.setCiudades(listadoCiudadesPais);
+        landingController.setFavoritos();
 
         // Mostramos la ventana.
         this.primaryStage.show();
@@ -81,7 +87,12 @@ public class MainApp extends Application {
     }
 
     public void registraFavorito(String etiqueta) {
+        System.out.println(ciudadFav);
+        System.out.println(coordFav);
         weatherAppFacade.registraLugarFavorito(ciudadFav,coordFav, etiqueta);
+        stageEtiqueta.close();
+        landingController.removeFavs();
+        landingController.setFavoritos();
     }
 
     public void registraEtiqueta(String ciudadFav, Coordenadas coordFav) {
@@ -92,23 +103,22 @@ public class MainApp extends Application {
             FXMLLoader favLoader = new FXMLLoader();
             favLoader.setLocation(MainApp.class.getClassLoader().getResource("es.uji.ei1048/vista/escenas/registraFav.fxml"));
 
-            Stage stage = new Stage();
-            stage.setTitle("Nuevo lugar favorito");
-            stage.setResizable(false);
+            stageEtiqueta = new Stage();
+            stageEtiqueta.setTitle("Nuevo lugar favorito");
+            stageEtiqueta.setResizable(false);
 
             // Cargamos la escena.
             Scene favScene = new Scene(favLoader.load());
 
             // Anyadimos la escena a la ventana de inicio.
-            stage.setScene(favScene);
+            stageEtiqueta.setScene(favScene);
 
             // Pasamos la referencia del main al controlador.
             EtiquetaController favController = favLoader.getController();
             favController.setMainApp(this);
 
             // Mostramos la ventana.
-            stage.showAndWait();
-            stage.close();
+            stageEtiqueta.showAndWait();
         } catch (Exception e) {
             error("Error al registrar un lugar favorito");
         }

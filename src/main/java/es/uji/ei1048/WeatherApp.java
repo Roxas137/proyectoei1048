@@ -11,7 +11,10 @@ import es.uji.ei1048.utils.Constants;
 import es.uji.ei1048.utils.Unit;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.rmi.RemoteException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class WeatherApp {
@@ -192,13 +195,13 @@ public class WeatherApp {
                 // Si es un dia nuevo
                 // Calcular maximos, minimos y medias
                 CondicionesMeteorologicas condiciones = new CondicionesMeteorologicas();
-                condiciones.setTemperaturaMin(Collections.min(tempMin));
-                condiciones.setTemperaturaMax(Collections.max(tempMax));
-                condiciones.setTemperaturaActual(getMean(tempMean));
-                condiciones.setVelViento(getMean(windSpeed));
-                condiciones.setDirViento(getMean(windDeg));
-                condiciones.setPresion(getMean(pressure));
-                condiciones.setHumedad(getMean(humidity));
+                condiciones.setTemperaturaMin(new BigDecimal(Collections.min(tempMin)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                condiciones.setTemperaturaMax(new BigDecimal(Collections.max(tempMax)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                condiciones.setTemperaturaActual(new BigDecimal(getMean(tempMean)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                condiciones.setVelViento(new BigDecimal(getMean(windSpeed)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                condiciones.setDirViento(new BigDecimal(getMean(windDeg)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                condiciones.setPresion(new BigDecimal(getMean(pressure)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                condiciones.setHumedad(new BigDecimal(getMean(humidity)).setScale(2, RoundingMode.HALF_UP).doubleValue());
                 condiciones.setEstadoClima(getMostCommonWeather(weatherState));
                 condiciones.setFechaPeticion(Calendar.getInstance());
                 condiciones.setFechaCondiciones(date);
@@ -232,13 +235,14 @@ public class WeatherApp {
 
         // Save last day
         CondicionesMeteorologicas condiciones = new CondicionesMeteorologicas();
-        condiciones.setTemperaturaMin(Collections.min(tempMin));
-        condiciones.setTemperaturaMax(Collections.max(tempMax));
-        condiciones.setTemperaturaActual(getMean(tempMean));
-        condiciones.setVelViento(getMean(windSpeed));
-        condiciones.setDirViento(getMean(windDeg));
-        condiciones.setPresion(getMean(pressure));
-        condiciones.setHumedad(getMean(humidity));
+
+        condiciones.setTemperaturaMin(new BigDecimal(Collections.min(tempMin)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+        condiciones.setTemperaturaMax(new BigDecimal(Collections.max(tempMax)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+        condiciones.setTemperaturaActual(new BigDecimal(getMean(tempMean)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+        condiciones.setVelViento(new BigDecimal(getMean(windSpeed)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+        condiciones.setDirViento(new BigDecimal(getMean(windDeg)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+        condiciones.setPresion(new BigDecimal(getMean(pressure)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+        condiciones.setHumedad(new BigDecimal(getMean(humidity)).setScale(2, RoundingMode.HALF_UP).doubleValue());
         condiciones.setEstadoClima(getMostCommonWeather(weatherState));
         condiciones.setFechaPeticion(Calendar.getInstance());
         condiciones.setFechaCondiciones(lastDate);
@@ -313,7 +317,12 @@ public class WeatherApp {
 
     private void setCurrentWind(CondicionesMeteorologicas condiciones, String jsonResult) {
         JsonElement wind = JsonParser.parseString(jsonResult).getAsJsonObject().get("wind");
-        condiciones.setDirViento(wind.getAsJsonObject().get("deg").getAsDouble());
+        try {
+            condiciones.setDirViento(wind.getAsJsonObject().get("deg").getAsDouble());
+        } catch (NullPointerException e) {
+            System.out.println("Error al obtener la direccion del viento del servidor");
+            condiciones.setDirViento(0.0);
+        }
         condiciones.setVelViento(wind.getAsJsonObject().get("speed").getAsDouble());
     }
 

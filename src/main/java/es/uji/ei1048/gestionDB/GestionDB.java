@@ -377,13 +377,14 @@ public class GestionDB extends UnicastRemoteObject {
 
             ResultSet rs = st.executeQuery();
 
-            LugarFavorito lugarFavorito = new LugarFavorito();
+            LugarFavorito lugarFavorito;
             while (rs.next()) {
                 long idCiudad = rs.getLong("idCiudad");
                 double longitud = rs.getDouble("longitud");
                 double latitud = rs.getDouble("latitud");
                 String etiqueta = rs.getString("etiqueta");
 
+                lugarFavorito = new LugarFavorito();
                 lugarFavorito.setIdCiudad(idCiudad);
                 lugarFavorito.setEtiqueta(etiqueta);
                 lugarFavorito.setLatitud(latitud);
@@ -395,7 +396,7 @@ public class GestionDB extends UnicastRemoteObject {
             System.out.println("Lugares favoritos obtenidos correctamente.");
             connection.close();
             rs.close();
-
+            System.out.println(result);
             return result;
         } catch (SQLException e) {
             System.out.println("Ha habido un error al obtener los lugares favoritos.");
