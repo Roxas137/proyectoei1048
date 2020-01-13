@@ -5,6 +5,7 @@ import es.uji.ei1048.exceptions.InvalidCoordenatesException;
 import es.uji.ei1048.facade.IWeatherAppFacade;
 import es.uji.ei1048.object.CondicionesMeteorologicas;
 import es.uji.ei1048.object.Coordenadas;
+import es.uji.ei1048.object.LugarFavorito;
 import es.uji.ei1048.vista.MainApp;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -88,6 +89,23 @@ public class LandingPageController {
         botonCoord.setUserData("Coord");
         tipoBusqueda.selectedToggleProperty().addListener(
                 (observable, oldValue, newValue) -> seleccion(newValue));
+
+        // Cargar todos los favoritos
+        List<LugarFavorito> lugarFavoritos = weatherAppFacade.getListaFavoritos();
+        for (LugarFavorito favorito : lugarFavoritos) {
+            Tab tabFav = new Tab(favorito.getEtiqueta());
+            AnchorPane anchorPane = (AnchorPane) tabFav.getContent();
+            CondicionesMeteorologicas condicionesMeteorologicas;
+            if (favorito.getIdCiudad() == -500) {
+                Coordenadas coordenadas = new Coordenadas(favorito.getLatitud(), favorito.getLongitud());
+                condicionesMeteorologicas = weatherAppFacade.getCondicionesActuales(coordenadas);
+            } else {
+                condicionesMeteorologicas = weatherAppFacade.getCondicionesActuales(mainApp.getNombreCiudad(favorito.getIdCiudad()));
+            }
+            GridPane condiciones = gridPaneConstructor(condicionesMeteorologicas);
+            anchorPane.getChildren().add(condiciones);
+            tabPane.getTabs().add(tabFav);
+        }
     }
 
     private void seleccion(Toggle togle) {
@@ -112,7 +130,7 @@ public class LandingPageController {
             Coordenadas coordenadas = new Coordenadas();
 
             if (esCiudad) {
-                consulta = ciudad.getText().replace(", ", "#");
+                consulta = ciudad.getText().replace(", ", "#").toLowerCase();
             } else {
                 double miLatitud;
                 double miLongitud;
@@ -121,6 +139,7 @@ public class LandingPageController {
                     miLongitud = Double.parseDouble(longitud.getText());
                 } catch (Exception e) {
                     System.out.println("Latitud o longitud incorrectas");
+                    mainApp.error("Latitud y longitud deben tener un formato numérico");
                     return;
                 }
                 coordenadas.setLatitud(miLatitud);
@@ -167,11 +186,18 @@ public class LandingPageController {
             fav.setDisable(false);
         } catch (NullPointerException e) {
             System.out.println("NullPointeException");
+            mainApp.error("Null Pointer Exception");
         } catch (InvalidCityException e) {
             System.out.println("La ciudad no es válida");
+            mainApp.error("La ciudad no es válida.\nIntroduce el nombre con el formato\nindicado en las sugerencias");
         } catch (InvalidCoordenatesException e){
             System.out.println("Las coordenadas no son válidas");
+            mainApp.error("Las coordenadas no son válidas");
         }
+    }
+
+    public void AddFavorito() {
+        mainApp.registraEtiqueta();
     }
 
 
