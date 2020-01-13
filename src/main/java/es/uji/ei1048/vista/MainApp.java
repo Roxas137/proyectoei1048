@@ -3,6 +3,7 @@ package es.uji.ei1048.vista;
 import es.uji.ei1048.facade.IWeatherAppFacade;
 import es.uji.ei1048.facade.WeatherAppFacade;
 import es.uji.ei1048.jsonTreatment.CityListReader;
+import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.service.IWeatherService;
 import es.uji.ei1048.service.openWeatherMap.OpenWeatherMap;
 import es.uji.ei1048.vista.controlador.EtiquetaController;
@@ -24,6 +25,8 @@ public class MainApp extends Application {
     private IWeatherAppFacade weatherAppFacade = new WeatherAppFacade(service);
     private Stage primaryStage;
     Map<Long, String> cities;
+    private String ciudadFav;
+    private Coordenadas coordFav;
 
     public static void main(String[] args) {
         launch(args);
@@ -77,12 +80,15 @@ public class MainApp extends Application {
         return cities.get(idCiudad);
     }
 
-    public void registraFavorito() {
-
+    public void registraFavorito(String etiqueta) {
+        weatherAppFacade.registraLugarFavorito(ciudadFav,coordFav, etiqueta);
     }
 
-    public void registraEtiqueta() {
+    public void registraEtiqueta(String ciudadFav, Coordenadas coordFav) {
         try {
+            this.ciudadFav = ciudadFav;
+            this.coordFav = coordFav;
+
             FXMLLoader favLoader = new FXMLLoader();
             favLoader.setLocation(MainApp.class.getClassLoader().getResource("es.uji.ei1048/vista/escenas/registraFav.fxml"));
 

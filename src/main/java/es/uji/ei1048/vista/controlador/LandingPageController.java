@@ -91,20 +91,24 @@ public class LandingPageController {
                 (observable, oldValue, newValue) -> seleccion(newValue));
 
         // Cargar todos los favoritos
-        List<LugarFavorito> lugarFavoritos = weatherAppFacade.getListaFavoritos();
-        for (LugarFavorito favorito : lugarFavoritos) {
-            Tab tabFav = new Tab(favorito.getEtiqueta());
-            AnchorPane anchorPane = (AnchorPane) tabFav.getContent();
-            CondicionesMeteorologicas condicionesMeteorologicas;
-            if (favorito.getIdCiudad() == -500) {
-                Coordenadas coordenadas = new Coordenadas(favorito.getLatitud(), favorito.getLongitud());
-                condicionesMeteorologicas = weatherAppFacade.getCondicionesActuales(coordenadas);
-            } else {
-                condicionesMeteorologicas = weatherAppFacade.getCondicionesActuales(mainApp.getNombreCiudad(favorito.getIdCiudad()));
+        try {
+            List<LugarFavorito> lugarFavoritos = weatherAppFacade.getLugaresFavoritos();
+            for (LugarFavorito favorito : lugarFavoritos) {
+                Tab tabFav = new Tab(favorito.getEtiqueta());
+                AnchorPane anchorPane = (AnchorPane) tabFav.getContent();
+                CondicionesMeteorologicas condicionesMeteorologicas;
+                if (favorito.getIdCiudad() == -500) {
+                    Coordenadas coordenadas = new Coordenadas(favorito.getLatitud(), favorito.getLongitud());
+                    condicionesMeteorologicas = weatherAppFacade.getCondicionesActuales(coordenadas);
+                } else {
+                    condicionesMeteorologicas = weatherAppFacade.getCondicionesActuales(mainApp.getNombreCiudad(favorito.getIdCiudad()));
+                }
+                GridPane condiciones = gridPaneConstructor(condicionesMeteorologicas);
+                anchorPane.getChildren().add(condiciones);
+                tabPane.getTabs().add(tabFav);
             }
-            GridPane condiciones = gridPaneConstructor(condicionesMeteorologicas);
-            anchorPane.getChildren().add(condiciones);
-            tabPane.getTabs().add(tabFav);
+        }catch (NullPointerException e) {
+            System.out.println("No hay lugares favoritos");
         }
     }
 
@@ -187,6 +191,7 @@ public class LandingPageController {
         } catch (NullPointerException e) {
             System.out.println("NullPointeException");
             mainApp.error("Null Pointer Exception");
+            e.printStackTrace();
         } catch (InvalidCityException e) {
             System.out.println("La ciudad no es válida");
             mainApp.error("La ciudad no es válida.\nIntroduce el nombre con el formato\nindicado en las sugerencias");
@@ -197,7 +202,16 @@ public class LandingPageController {
     }
 
     public void AddFavorito() {
-        mainApp.registraEtiqueta();
+        String ciudadFav = "";
+        Coordenadas coordFav;
+        if (esCiudad) {
+            ciudadFav = ciudad.getText();
+            coordFav = new Coordenadas(-500,-500);
+        } else {
+            ciudadFav = ciudad.getText();
+            coordFav = new Coordenadas(Double.parseDouble(latitud.getText()), Double.parseDouble(longitud.getText()));
+        }
+        mainApp.registraEtiqueta(ciudadFav, coordFav);
     }
 
 

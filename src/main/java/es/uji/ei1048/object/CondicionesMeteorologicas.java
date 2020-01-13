@@ -68,7 +68,7 @@ public class CondicionesMeteorologicas {
         return sensacionTermica;
     }
 
-    public void setSensacionTermica(double sensacionTermica) {
+    public void setSensacionTermica(Double sensacionTermica) {
         this.sensacionTermica = sensacionTermica;
     }
 
@@ -76,15 +76,15 @@ public class CondicionesMeteorologicas {
         return presion;
     }
 
-    public void setPresion(double presion) {
+    public void setPresion(Double presion) {
         this.presion = presion;
     }
 
-    public double getHumedad() {
+    public Double getHumedad() {
         return humedad;
     }
 
-    public void setHumedad(double humedad) {
+    public void setHumedad(Double humedad) {
         this.humedad = humedad;
     }
 
@@ -104,19 +104,19 @@ public class CondicionesMeteorologicas {
         this.fechaPeticion = fechaPeticion;
     }
 
-    public double getTemperaturaMax() {
+    public Double getTemperaturaMax() {
         return temperaturaMax;
     }
 
-    public void setTemperaturaMax(double temperaturaMax) {
+    public void setTemperaturaMax(Double temperaturaMax) {
         this.temperaturaMax = temperaturaMax;
     }
 
-    public double getTemperaturaMin() {
+    public Double getTemperaturaMin() {
         return temperaturaMin;
     }
 
-    public void setTemperaturaMin(double temperaturaMin) {
+    public void setTemperaturaMin(Double temperaturaMin) {
         this.temperaturaMin = temperaturaMin;
     }
 
@@ -132,7 +132,7 @@ public class CondicionesMeteorologicas {
         return this.velViento;
     }
 
-    public void setVelViento(double velViento) {
+    public void setVelViento(Double velViento) {
         this.velViento = velViento;
     }
 
@@ -140,7 +140,7 @@ public class CondicionesMeteorologicas {
         return this.dirViento;
     }
 
-    public void setDirViento(double dirViento) {
+    public void setDirViento(Double dirViento) {
         this.dirViento = dirViento;
     }
 

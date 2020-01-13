@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="120.0" prefWidth="300.0" style="-fx-background-color: #009DDC;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.uji.ei1048.vista.controlador.EtiquetaController">
+   <children>
+      <TextField fx:id="etiqueta" layoutX="120.0" layoutY="49.0" AnchorPane.leftAnchor="110.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="25.0" />
+      <Label layoutX="30.0" layoutY="53.0" stylesheets="@../style/MyWeatherStyle.css" text="Etiqueta:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="25.0" />
+      <Button layoutX="124.0" layoutY="100.0" mnemonicParsing="false" onAction="#crearFav" stylesheets="@../style/MyWeatherStyle.css" text="Añadir" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" />
+   </children>
+</AnchorPane>
