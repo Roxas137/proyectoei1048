@@ -35,7 +35,7 @@ public class WeatherApp {
 
             CondicionesMeteorologicas condicionesGuardadas;
 
-            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, idCiudad, Constants.PETITION_CURRENT);
+            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(idCiudad);
 
             if (comparaFechaPeticiones(fechaPeticion, condicionesGuardadas)) {
                 return condicionesGuardadas;
@@ -65,7 +65,7 @@ public class WeatherApp {
 
             CondicionesMeteorologicas condicionesGuardadas;
 
-            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, coor, Constants.PETITION_CURRENT);
+            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(coor);
 
             if (comparaFechaPeticiones(fechaPeticion, condicionesGuardadas)) {
                 return condicionesGuardadas;
@@ -298,9 +298,9 @@ public class WeatherApp {
 
     private void updateDatabase(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion, Coordenadas coordenadas) {
         if (idCiudad.equals(Constants.NULL_CITY)) {
-            gestionDB.modifyCondicionesMeteorologicas(condiciones, coordenadas, tipoPeticion);
+            gestionDB.modifyCondicionesMeteorologicas(condiciones, coordenadas);
         } else {
-            gestionDB.modifyCondicionesMeteorologicas(condiciones, idCiudad, tipoPeticion);
+            gestionDB.modifyCondicionesMeteorologicas(condiciones, idCiudad);
         }
     }
 
