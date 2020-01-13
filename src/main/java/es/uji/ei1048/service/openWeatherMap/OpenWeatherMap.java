@@ -79,7 +79,8 @@ public class OpenWeatherMap implements IWeatherService {
         return getPredictionWeather(typeId, place, unit);
     }
 
-    private String getPredictionWeather(OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException {
+    @Override
+    public String getPredictionWeather(OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException {
         URL url = getUrl(Constants.PETITION_PREDICTION, typeId, place, unit);
         String readLine = "";
 

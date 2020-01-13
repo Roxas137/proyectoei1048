@@ -19,7 +19,7 @@ public class E2EPrediccionCiudad extends E2ETestBed {
     @Test
     public void cityValid() {
         // Given:   una ciudad (String)
-        String ciudad = Constants.ID_CASTELLON;
+        String ciudad = Constants.NOMBRE_CIUDAD;
 
         // Given:   una fecha y hora para la prediccion
         Calendar fecha = GregorianCalendar.getInstance();
@@ -76,7 +76,7 @@ public class E2EPrediccionCiudad extends E2ETestBed {
     @Test
     public void savePrediccionCiudadTest(){
         // Given:   una ciudad (String)
-        String ciudad = Constants.ID_CASTELLON;
+        long ciudad = Constants.ID_CASTELLON;
 
         // Given:   una fecha y hora para la prediccion
         Calendar fecha = GregorianCalendar.getInstance();
@@ -85,19 +85,19 @@ public class E2EPrediccionCiudad extends E2ETestBed {
 
         // When:    el usuario busca esa ciudad
         //          la aplicacion hace una peticion al servicio meteorologico y guarda los resultados
-        List<CondicionesMeteorologicas> condicionesCiudad = weatherApp.getPrediccion(cities.get(Long.parseLong(ciudad))+"#es");
+        List<CondicionesMeteorologicas> condicionesCiudad = weatherApp.getPrediccion(cities.get(ciudad));
 
         for (CondicionesMeteorologicas cm : condicionesCiudad){
-            gestionDB.registrarCondicionesMeteorologicas(cm, Long.parseLong(ciudad), Constants.PETITION_PREDICTION);
+            gestionDB.registrarCondicionesMeteorologicas(cm, ciudad, Constants.PETITION_PREDICTION);
         }
     }
 
     @Test
     public void getPrediccionCiudadTest(){
         // Given:   una ciudad (String)
-        String ciudad = Constants.ID_CASTELLON;
+        long ciudad = Constants.ID_CASTELLON;
 
         //Saca la ultima prediccion realizada sobre la ciudad dada.
-        gestionDB.getPrediccion(Long.parseLong(ciudad));
+        gestionDB.getPrediccion(ciudad);
     }
 }

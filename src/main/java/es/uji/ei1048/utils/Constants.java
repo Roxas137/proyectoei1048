@@ -18,7 +18,8 @@ public class Constants {
     public static final int PLACE_COORDENATES = 1;
 
     // ID Ciudades
-    public static final String ID_CASTELLON = "6356995";
+    public static final long ID_CASTELLON = 6356377;
+    public static final String NOMBRE_CIUDAD = "burgos#es";
     public static final String ID_VALLADOLID = "6362308";
     public static final Long NULL_CITY = -500L;
 

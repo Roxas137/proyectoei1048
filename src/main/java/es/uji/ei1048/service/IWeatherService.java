@@ -16,6 +16,9 @@ public interface IWeatherService {
     Map<Long, String> getCities();
     String getCurrentWeather() throws IOException;
     String getPredictionWeather() throws IOException;
+
+    String getPredictionWeather(OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException;
+
     boolean checkCity(String city) throws NotImplementedException;
     String getCurrentWeather(OpenWeatherMapTypeId typeId, String[] place, Unit unit) throws IOException;
 

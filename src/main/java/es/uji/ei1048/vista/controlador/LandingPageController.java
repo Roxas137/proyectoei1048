@@ -82,6 +82,8 @@ public class LandingPageController {
         opcionesPrediccion.add("Mañana");
         opcionesPrediccion.add("2 dias");
         opcionesPrediccion.add("3 dias");
+        opcionesPrediccion.add("4 dias");
+        opcionesPrediccion.add("5 dias");
         prediccion.setItems(opcionesPrediccion);
         prediccion.setValue("Hoy");
 
@@ -169,23 +171,37 @@ public class LandingPageController {
                     break;
                 case "Mañana":
                     if (esCiudad) {
-                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(consulta).get(5);
-                    } else {
-                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(coordenadas).get(5);
-                    }
-                    break;
-                case "2 dias":
-                    if (esCiudad) {
                         condicionesMeteorologicas = weatherAppFacade.getPrediccion(consulta).get(4);
                     } else {
                         condicionesMeteorologicas = weatherAppFacade.getPrediccion(coordenadas).get(4);
                     }
                     break;
-                case "3 dias":
+                case "2 dias":
                     if (esCiudad) {
                         condicionesMeteorologicas = weatherAppFacade.getPrediccion(consulta).get(3);
                     } else {
                         condicionesMeteorologicas = weatherAppFacade.getPrediccion(coordenadas).get(3);
+                    }
+                    break;
+                case "3 dias":
+                    if (esCiudad) {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(consulta).get(2);
+                    } else {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(coordenadas).get(2);
+                    }
+                    break;
+                case "4 dias":
+                    if (esCiudad) {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(consulta).get(1);
+                    } else {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(coordenadas).get(1);
+                    }
+                    break;
+                case "5 dias":
+                    if (esCiudad) {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(consulta).get(0);
+                    } else {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(coordenadas).get(0);
                     }
                     break;
             }

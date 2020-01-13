@@ -75,7 +75,7 @@ public class WeatherApp {
                 return condicionesGuardadas;
             }
 
-            String jsonResult = service.getCurrentWeather(OpenWeatherMapTypeId.ID, place, Unit.CELSIUS);
+            String jsonResult = service.getCurrentWeather(OpenWeatherMapTypeId.COORDENATES, place, Unit.CELSIUS);
             CondicionesMeteorologicas condiciones = fromJsonToObject(jsonResult);
             if (condicionesGuardadas == null) {
                 insertDatabase(condiciones, Constants.NULL_CITY, Constants.PETITION_CURRENT, coor);
@@ -93,6 +93,8 @@ public class WeatherApp {
         try {
             Calendar fechaPeticion = Calendar.getInstance();
             long idCiudad = service.getIdByCity(ciudad);
+            String[] place = new String[1];
+            place[0] = String.valueOf(idCiudad);
 
             List<CondicionesMeteorologicas> prediccionGuardada;
             prediccionGuardada = gestionDB.getPrediccion(idCiudad);
@@ -101,7 +103,7 @@ public class WeatherApp {
                 return prediccionGuardada;
             }
 
-            String jsonResult = service.getPredictionWeather();
+            String jsonResult = service.getPredictionWeather(OpenWeatherMapTypeId.ID, place, Unit.CELSIUS);
             List<CondicionesMeteorologicas> condiciones = fromJsonToList(jsonResult);
             setPetitionDate(condiciones);
 
@@ -121,12 +123,15 @@ public class WeatherApp {
 
             List<CondicionesMeteorologicas> prediccionGuardada;
             prediccionGuardada = gestionDB.getPrediccion(coor);
+            String[] place = new String[2];
+            place[0] = String.valueOf(coor.getLatitud());
+            place[1] = String.valueOf(coor.getLongitud());
+
 
             if (!prediccionGuardada.isEmpty() && comparaFechaPeticiones(fechaPeticion, prediccionGuardada.get(0))) {
                 return prediccionGuardada;
             }
-
-            String jsonResult = service.getPredictionWeather();
+            String jsonResult = service.getPredictionWeather(OpenWeatherMapTypeId.COORDENATES, place, Unit.CELSIUS);
             List<CondicionesMeteorologicas> condiciones = fromJsonToList(jsonResult);
             setPetitionDate(condiciones);
 
@@ -194,20 +199,20 @@ public class WeatherApp {
             if (date.get(Calendar.HOUR_OF_DAY) == 0 || Calendar.HOUR_OF_DAY == 1 || Calendar.HOUR_OF_DAY == 2) {
                 // Si es un dia nuevo
                 // Calcular maximos, minimos y medias
-                CondicionesMeteorologicas condiciones = new CondicionesMeteorologicas();
-                condiciones.setTemperaturaMin(new BigDecimal(Collections.min(tempMin)).setScale(2, RoundingMode.HALF_UP).doubleValue());
-                condiciones.setTemperaturaMax(new BigDecimal(Collections.max(tempMax)).setScale(2, RoundingMode.HALF_UP).doubleValue());
-                condiciones.setTemperaturaActual(new BigDecimal(getMean(tempMean)).setScale(2, RoundingMode.HALF_UP).doubleValue());
-                condiciones.setVelViento(new BigDecimal(getMean(windSpeed)).setScale(2, RoundingMode.HALF_UP).doubleValue());
-                condiciones.setDirViento(new BigDecimal(getMean(windDeg)).setScale(2, RoundingMode.HALF_UP).doubleValue());
-                condiciones.setPresion(new BigDecimal(getMean(pressure)).setScale(2, RoundingMode.HALF_UP).doubleValue());
-                condiciones.setHumedad(new BigDecimal(getMean(humidity)).setScale(2, RoundingMode.HALF_UP).doubleValue());
-                condiciones.setEstadoClima(getMostCommonWeather(weatherState));
-                condiciones.setFechaPeticion(Calendar.getInstance());
-                condiciones.setFechaCondiciones(date);
 
                 // Add the prediction of the last day to the list, if it's the first data, don't add
                 if (!firstData) {
+                    CondicionesMeteorologicas condiciones = new CondicionesMeteorologicas();
+                    condiciones.setTemperaturaMin(new BigDecimal(Collections.min(tempMin)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                    condiciones.setTemperaturaMax(new BigDecimal(Collections.max(tempMax)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                    condiciones.setTemperaturaActual(new BigDecimal(getMean(tempMean)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                    condiciones.setVelViento(new BigDecimal(getMean(windSpeed)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                    condiciones.setDirViento(new BigDecimal(getMean(windDeg)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                    condiciones.setPresion(new BigDecimal(getMean(pressure)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                    condiciones.setHumedad(new BigDecimal(getMean(humidity)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                    condiciones.setEstadoClima(getMostCommonWeather(weatherState));
+                    condiciones.setFechaPeticion(Calendar.getInstance());
+                    condiciones.setFechaCondiciones(date);
                     prediction.add(condiciones);
                 }
 

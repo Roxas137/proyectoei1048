@@ -16,7 +16,7 @@ public class E2ECondicionesCiudad extends E2ETestBed {
     @Test
     public void cityValid() {
         // Given:   una ciudad (String)
-        String ciudad = Constants.ID_CASTELLON;
+        String ciudad = Constants.NOMBRE_CIUDAD;
 
         // When:    el usuario busca esa ciudad
         //          la aplicacion hace una peticion al servicio meteorologico
@@ -41,7 +41,7 @@ public class E2ECondicionesCiudad extends E2ETestBed {
     @Test
     public void saveCondicionesCoordenadasTest(){
         //Given un id de una Ciudad y unas condiciones meteorologicas
-        CondicionesMeteorologicas cm = weatherApp.getCondicionesActuales(Constants.ID_CASTELLON);
-        assertTrue(gestionDB.registrarCondicionesMeteorologicas(cm, Long.parseLong(Constants.ID_CASTELLON), 1));
+        CondicionesMeteorologicas cm = weatherApp.getCondicionesActuales(Constants.NOMBRE_CIUDAD);
+        assertTrue(gestionDB.registrarCondicionesMeteorologicas(cm, Constants.ID_CASTELLON, 1));
     }
 }
