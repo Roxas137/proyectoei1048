@@ -56,15 +56,15 @@ public class CondicionesMeteorologicas {
         this.fechaPeticion = Calendar.getInstance();
     }
 
-    public double getTemperaturaActual() {
+    public Double getTemperaturaActual() {
         return temperaturaActual;
     }
 
-    public void setTemperaturaActual(double temperaturaActual) {
+    public void setTemperaturaActual(Double temperaturaActual) {
         this.temperaturaActual = temperaturaActual;
     }
 
-    public double getSensacionTermica() {
+    public Double getSensacionTermica() {
         return sensacionTermica;
     }
 
@@ -72,7 +72,7 @@ public class CondicionesMeteorologicas {
         this.sensacionTermica = sensacionTermica;
     }
 
-    public double getPresion() {
+    public Double getPresion() {
         return presion;
     }
 

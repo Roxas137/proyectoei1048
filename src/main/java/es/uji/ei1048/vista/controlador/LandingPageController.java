@@ -1,7 +1,10 @@
 package es.uji.ei1048.vista.controlador;
 
+import es.uji.ei1048.exceptions.InvalidCityException;
+import es.uji.ei1048.exceptions.InvalidCoordenatesException;
 import es.uji.ei1048.facade.IWeatherAppFacade;
 import es.uji.ei1048.object.CondicionesMeteorologicas;
+import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.vista.MainApp;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,6 +50,7 @@ public class LandingPageController {
     private MainApp mainApp;
     private IWeatherAppFacade weatherAppFacade;
     private List<String> ciudades;
+    private boolean esCiudad = true;
 
 
     private String temperaturaActual;
@@ -64,7 +68,7 @@ public class LandingPageController {
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         fav.setDisable(true);
 
         ObservableList<String> listaServicios = FXCollections.observableArrayList();
@@ -87,28 +91,88 @@ public class LandingPageController {
     }
 
     private void seleccion(Toggle togle) {
-        if (togle.getUserData().toString().equals("Ciudad")){
+        if (togle.getUserData().toString().equals("Ciudad")) {
             ciudad.setDisable(false);
             latitud.setDisable(true);
             longitud.setDisable(true);
+            esCiudad = true;
         } else {
             ciudad.setDisable(true);
             latitud.setDisable(false);
             longitud.setDisable(false);
+            esCiudad = false;
         }
     }
 
     // Coordenadas o ciudad
     // Prediccion: 1,2,3
     public void consultaTiempo() {
-        String[] ciudadConsulta = ciudad.getText().split(", ");
-        CondicionesMeteorologicas condicionesMeteorologicas = weatherAppFacade.getCondicionesActuales(ciudadConsulta[0] + "#" + ciudadConsulta[1] );
-        GridPane condiciones = gridPaneConstructor(condicionesMeteorologicas);
-        ubicacion.setText(ciudad.getText().toUpperCase());
-        panelActual.getChildren().add(condiciones);
-        fav.setDisable(false);
-    }
+        try {
+            String consulta = "";
+            Coordenadas coordenadas = new Coordenadas();
 
+            if (esCiudad) {
+                consulta = ciudad.getText().replace(", ", "#");
+            } else {
+                double miLatitud;
+                double miLongitud;
+                try {
+                    miLatitud = Double.parseDouble(latitud.getText());
+                    miLongitud = Double.parseDouble(longitud.getText());
+                } catch (Exception e) {
+                    System.out.println("Latitud o longitud incorrectas");
+                    return;
+                }
+                coordenadas.setLatitud(miLatitud);
+                coordenadas.setLongitud(miLongitud);
+            }
+            String tipoPeticion = prediccion.getValue().toString();
+            CondicionesMeteorologicas condicionesMeteorologicas = null;
+            switch (tipoPeticion) {
+                case "Hoy":
+                    if (esCiudad) {
+                        condicionesMeteorologicas = weatherAppFacade.getCondicionesActuales(consulta);
+                    } else {
+                        condicionesMeteorologicas = weatherAppFacade.getCondicionesActuales(coordenadas);
+                    }
+                    break;
+                case "Mañana":
+                    if (esCiudad) {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(consulta).get(5);
+                    } else {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(coordenadas).get(5);
+                    }
+                    break;
+                case "2 dias":
+                    if (esCiudad) {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(consulta).get(4);
+                    } else {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(coordenadas).get(4);
+                    }
+                    break;
+                case "3 dias":
+                    if (esCiudad) {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(consulta).get(3);
+                    } else {
+                        condicionesMeteorologicas = weatherAppFacade.getPrediccion(coordenadas).get(3);
+                    }
+                    break;
+            }
+
+            GridPane condiciones = gridPaneConstructor(condicionesMeteorologicas);
+            ubicacion.setText(ciudad.getText().toUpperCase());
+            if (panelActual.getChildren().size() == 3)
+                panelActual.getChildren().remove(2);
+            panelActual.getChildren().add(condiciones);
+            fav.setDisable(false);
+        } catch (NullPointerException e) {
+            System.out.println("NullPointeException");
+        } catch (InvalidCityException e) {
+            System.out.println("La ciudad no es válida");
+        } catch (InvalidCoordenatesException e){
+            System.out.println("Las coordenadas no son válidas");
+        }
+    }
 
 
     private GridPane gridPaneConstructor(CondicionesMeteorologicas condiciones) {
@@ -141,9 +205,9 @@ public class LandingPageController {
         panel.add(new Label("Dir. viento:"), 0, 4);
         panel.add(new Label(dirViento), 1, 4);
 
-        panel.add(new Label("Presion:"), 3, 3,2,1);
+        panel.add(new Label("Presion:"), 3, 3, 2, 1);
         panel.add(new Label(presion), 5, 3);
-        panel.add(new Label("Humedad:"), 3, 4,2,1);
+        panel.add(new Label("Humedad:"), 3, 4, 2, 1);
         panel.add(new Label(humedad), 5, 4);
         panel.setHgap(15);
         panel.setVgap(20);
