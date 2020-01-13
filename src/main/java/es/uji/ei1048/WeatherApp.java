@@ -4,6 +4,7 @@ import com.google.gson.*;
 import es.uji.ei1048.gestionDB.GestionDB;
 import es.uji.ei1048.object.CondicionesMeteorologicas;
 import es.uji.ei1048.object.Coordenadas;
+import es.uji.ei1048.object.LugarFavorito;
 import es.uji.ei1048.service.IWeatherService;
 import es.uji.ei1048.service.openWeatherMap.OpenWeatherMapTypeId;
 import es.uji.ei1048.utils.Constants;
@@ -35,7 +36,7 @@ public class WeatherApp {
 
             CondicionesMeteorologicas condicionesGuardadas;
 
-            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, idCiudad, Constants.PETITION_CURRENT);
+            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(idCiudad);
 
             if (comparaFechaPeticiones(fechaPeticion, condicionesGuardadas)) {
                 return condicionesGuardadas;
@@ -65,7 +66,7 @@ public class WeatherApp {
 
             CondicionesMeteorologicas condicionesGuardadas;
 
-            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(fechaCondicion, coor, Constants.PETITION_CURRENT);
+            condicionesGuardadas = gestionDB.getCondicionesMeteorologicas(coor);
 
             if (comparaFechaPeticiones(fechaPeticion, condicionesGuardadas)) {
                 return condicionesGuardadas;
@@ -136,6 +137,26 @@ public class WeatherApp {
         return null;
     }
 
+    public List<LugarFavorito> getLugaresFavoritos(){
+        return gestionDB.getLugaresFavoritos();
+    }
+
+    public boolean registraLugarFavorito(LugarFavorito lugarFavorito){
+        if (lugarFavorito.getIdCiudad() == -500){
+            return gestionDB.registrarLugarFavorito(lugarFavorito.getLongitud(), lugarFavorito.getLatitud(), lugarFavorito.getEtiqueta());
+        }else{
+            return gestionDB.registrarLugarFavorito(lugarFavorito.getIdCiudad(), lugarFavorito.getEtiqueta());
+        }
+    }
+
+    public boolean eliminarLugarFavorito(LugarFavorito lugarFavorito){
+        if(lugarFavorito.getIdCiudad() == -500){
+            return gestionDB.eliminaLugarFavorito(lugarFavorito.getLongitud(), lugarFavorito.getLatitud(), lugarFavorito.getEtiqueta());
+        }else{
+            return gestionDB.eliminaLugarFavorito(lugarFavorito.getIdCiudad(), lugarFavorito.getEtiqueta());
+        }
+    }
+
 
     /**
      * Sorry
@@ -149,8 +170,8 @@ public class WeatherApp {
         List<CondicionesMeteorologicas> prediction = new ArrayList<>();
 
         // Datos de las condiciones metereologicas
-        List<Double> tempMin = new ArrayList<>();
-        List<Double> tempMax = new ArrayList<>();
+        //List<Double> tempMin = new ArrayList<>();
+        //List<Double> tempMax = new ArrayList<>();
         List<Double> tempMean = new ArrayList<>();
         List<Double> windSpeed = new ArrayList<>();
         List<Double> windDeg = new ArrayList<>();
@@ -171,8 +192,8 @@ public class WeatherApp {
                 // Si es un dia nuevo
                 // Calcular maximos, minimos y medias
                 CondicionesMeteorologicas condiciones = new CondicionesMeteorologicas();
-                condiciones.setTemperaturaMin(Collections.min(tempMin));
-                condiciones.setTemperaturaMax(Collections.max(tempMax));
+//                condiciones.setTemperaturaMin(Collections.min(tempMin));
+//                condiciones.setTemperaturaMax(Collections.max(tempMax));
                 condiciones.setTemperaturaActual(getMean(tempMean));
                 condiciones.setVelViento(getMean(windSpeed));
                 condiciones.setDirViento(getMean(windDeg));
@@ -188,8 +209,8 @@ public class WeatherApp {
                 }
 
                 // Clear all the data
-                tempMin.clear();
-                tempMax.clear();
+//                tempMin.clear();
+//                tempMax.clear();
                 tempMean.clear();
                 windSpeed.clear();
                 windDeg.clear();
@@ -199,8 +220,8 @@ public class WeatherApp {
             }
             firstData = false;
             // Add all the data to its lists
-            tempMin.add(main.getAsJsonObject().get("temp_min").getAsDouble());
-            tempMax.add(main.getAsJsonObject().get("temp_max").getAsDouble());
+//            tempMin.add(main.getAsJsonObject().get("temp_min").getAsDouble());
+//            tempMax.add(main.getAsJsonObject().get("temp_max").getAsDouble());
             tempMean.add(main.getAsJsonObject().get("temp").getAsDouble());
             pressure.add(main.getAsJsonObject().get("pressure").getAsDouble());
             humidity.add(main.getAsJsonObject().get("humidity").getAsDouble());
@@ -211,8 +232,8 @@ public class WeatherApp {
 
         // Save last day
         CondicionesMeteorologicas condiciones = new CondicionesMeteorologicas();
-        condiciones.setTemperaturaMin(Collections.min(tempMin));
-        condiciones.setTemperaturaMax(Collections.max(tempMax));
+//        condiciones.setTemperaturaMin(Collections.min(tempMin));
+//        condiciones.setTemperaturaMax(Collections.max(tempMax));
         condiciones.setTemperaturaActual(getMean(tempMean));
         condiciones.setVelViento(getMean(windSpeed));
         condiciones.setDirViento(getMean(windDeg));
@@ -298,9 +319,9 @@ public class WeatherApp {
 
     private void updateDatabase(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion, Coordenadas coordenadas) {
         if (idCiudad.equals(Constants.NULL_CITY)) {
-            gestionDB.modifyCondicionesMeteorologicas(condiciones, coordenadas, tipoPeticion);
+            gestionDB.modifyCondicionesMeteorologicas(condiciones, coordenadas);
         } else {
-            gestionDB.modifyCondicionesMeteorologicas(condiciones, idCiudad, tipoPeticion);
+            gestionDB.modifyCondicionesMeteorologicas(condiciones, idCiudad);
         }
     }
 

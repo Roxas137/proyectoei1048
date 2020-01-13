@@ -8,6 +8,7 @@ import es.uji.ei1048.exceptions.InvalidCoordenatesException;
 import es.uji.ei1048.exceptions.InvalidDateException;
 import es.uji.ei1048.object.CondicionesMeteorologicas;
 import es.uji.ei1048.object.Coordenadas;
+import es.uji.ei1048.object.LugarFavorito;
 import es.uji.ei1048.service.IWeatherService;
 
 import java.util.List;
@@ -51,6 +52,30 @@ public class WeatherAppFacade implements IWeatherAppFacade {
         checkCoordenates(coord);
 
         return weatherApp.getPredictionWeatherByCoordenates(service, coord);
+    }
+
+    public List<LugarFavorito> getLugaresFavoritos(){
+        return weatherApp.getLugaresFavoritos();
+    }
+
+    public boolean registraLugarFavorito(String city, Coordenadas coordenadas, String etiqueta) throws InvalidCoordenatesException, InvalidCityException{
+        LugarFavorito lugarFavorito = new LugarFavorito();
+        if (coordenadas.getLatitud() == -500 && coordenadas.getLongitud() == -500){
+            checkCity(city);
+            lugarFavorito.setIdCiudad(service.getIdByCity(city));
+        }else{
+            checkCoordenates(coordenadas);
+            lugarFavorito.setIdCiudad(-500);
+        }
+        lugarFavorito.setLongitud(coordenadas.getLongitud());
+        lugarFavorito.setLatitud(coordenadas.getLatitud());
+        lugarFavorito.setEtiqueta(etiqueta);
+
+        return weatherApp.registraLugarFavorito(lugarFavorito);
+    }
+
+    public boolean eliminaLugarFavorito(LugarFavorito lugarFavorito){
+        return weatherApp.eliminarLugarFavorito(lugarFavorito);
     }
 
     /**

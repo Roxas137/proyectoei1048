@@ -3,6 +3,7 @@ package es.uji.ei1048.gestionDB;
 import es.uji.ei1048.object.CondicionesMeteorologicas;
 import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.object.LugarFavorito;
+import es.uji.ei1048.utils.Constants;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -242,14 +243,15 @@ public class GestionDB extends UnicastRemoteObject {
      * @param latitud  Latitud del lugar favorito a borrar.
      * @return True en caso de que se haya completado correctamente el borrado, false en caso contrario.
      */
-    public boolean eliminaLugarFavorito(double longitud, double latitud) {
+    public boolean eliminaLugarFavorito(double longitud, double latitud, String etiqueta) {
         try {
             Connection connection = connect();
-            String sentence = "DELETE FROM LugaresFavoritos WHERE longitud = ? AND latitud = ?";
+            String sentence = "DELETE FROM LugaresFavoritos WHERE longitud = ? AND latitud = ? AND etiqueta = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, longitud);
             st.setDouble(2, latitud);
+            st.setString(3, etiqueta);
 
             st.executeUpdate();
             connection.close();
@@ -270,13 +272,14 @@ public class GestionDB extends UnicastRemoteObject {
      * @param idCiudad Identificador de la ciudad a borrar.
      * @return True en caso de que se haya completado correctamente el borrado, false en caso contrario.
      */
-    public boolean eliminaLugarFavorito(long idCiudad) {
+    public boolean eliminaLugarFavorito(long idCiudad, String etiqueta) {
         try {
             Connection connection = connect();
-            String sentence = "DELETE FROM LugaresFavoritos WHERE idCiudad = ?";
+            String sentence = "DELETE FROM LugaresFavoritos WHERE idCiudad = ? AND etiqueta = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setLong(1, idCiudad);
+            st.setString(2, etiqueta);
 
             st.executeUpdate();
             connection.close();
@@ -304,7 +307,7 @@ public class GestionDB extends UnicastRemoteObject {
     public boolean modificarLugarFavorito(double antiguaLongitud, double antiguaLatitud, double nuevaLongitud, double nuevaLatitud, String nuevaEtiqueta) {
         try {
             Connection connection = connect();
-            String sentence = "UPDATE LugaresFavoritos SET longitud = ?, latitud = ?, etiqueta = ? WHERE longitud = ? AND latitud = ?";
+            String sentence = "UPDATE LugaresFavoritos SET longitud = ?, latitud = ?, etiqueta = ? WHERE longitud = ? AND latitud = ? AND etiqueta = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, nuevaLongitud);
@@ -413,27 +416,37 @@ public class GestionDB extends UnicastRemoteObject {
     public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Coordenadas coordenadas, int tipoPeticion) {
         try {
             Connection connection = connect();
-            String sentence = "INSERT INTO CondicionesMeteorologicas(" +
-                    "longitud, latitud, idCiudad, temperaturaActual, sensacionTermica, temperaturaMin, temperaturaMax, estadoClima, velViento" +
-                    ", dirViento, presion, humedad, fechaCondiciones, fechaPeticion, tipoPeticion)" +
-                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sentence;
+            if (tipoPeticion == 1) {
+                sentence = "INSERT INTO CondicionesMeteorologicas(" +
+                        "longitud, latitud, idCiudad, temperaturaActual, temperaturaMin, temperaturaMax, estadoClima, velViento" +
+                        ", dirViento, presion, humedad, fechaCondiciones, fechaPeticion, tipoPeticion, sensacionTermica)" +
+                        " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            } else {
+                sentence = "INSERT INTO CondicionesMeteorologicas(" +
+                        "longitud, latitud, idCiudad, temperaturaActual, temperaturaMin, temperaturaMax, estadoClima, velViento" +
+                        ", dirViento, presion, humedad, fechaCondiciones, fechaPeticion, tipoPeticion)" +
+                        " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            }
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, coordenadas.getLongitud());
             st.setDouble(2, coordenadas.getLatitud());
-            st.setLong(3, -500);
+            st.setLong(3,-500);
             st.setDouble(4, condiciones.getTemperaturaActual());
-            st.setDouble(5, condiciones.getSensacionTermica());
-            st.setDouble(6, condiciones.getTemperaturaMin());
-            st.setDouble(7, condiciones.getTemperaturaMax());
-            st.setString(8, condiciones.getEstadoClima());
-            st.setDouble(9, condiciones.getVelViento());
-            st.setDouble(10, condiciones.getDirViento());
-            st.setDouble(11, condiciones.getPresion());
-            st.setDouble(12, condiciones.getHumedad());
-            st.setLong(13, condiciones.getFechaCondiciones().getTimeInMillis());
-            st.setLong(14, condiciones.getFechaPeticion().getTimeInMillis());
-            st.setInt(15, tipoPeticion);
+            st.setDouble(5, condiciones.getTemperaturaMin());
+            st.setDouble(6, condiciones.getTemperaturaMax());
+            st.setString(7, condiciones.getEstadoClima());
+            st.setDouble(8, condiciones.getVelViento());
+            st.setDouble(9, condiciones.getDirViento());
+            st.setDouble(10, condiciones.getPresion());
+            st.setDouble(11, condiciones.getHumedad());
+            st.setLong(12, condiciones.getFechaCondiciones().getTimeInMillis());
+            st.setLong(13, condiciones.getFechaPeticion().getTimeInMillis());
+            st.setInt(14, tipoPeticion);
+            if (tipoPeticion == 1) {
+                st.setDouble(15, condiciones.getSensacionTermica());
+            }
 
             st.executeUpdate();
 
@@ -512,12 +525,10 @@ public class GestionDB extends UnicastRemoteObject {
     /**
      * Obtener las condicciones meteorologicas a partir de unos datos y coordenadas concretas.
      *
-     * @param fechaCondicion Fecha de las condiciones deseadas.
      * @param coordenadas    Localizacion de las condiciones.
-     * @param tipoPeticion   Tipo de peticion [1 - current; 0 - forecast]
      * @return Las condiciones meteorologicas deseadas.
      */
-    public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, Coordenadas coordenadas, int tipoPeticion) {
+    public CondicionesMeteorologicas getCondicionesMeteorologicas(Coordenadas coordenadas) {
         try {
             Connection connection = connect();
             String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE longitud = ? and latitud = ? and tipoPeticion = ?";
@@ -525,7 +536,7 @@ public class GestionDB extends UnicastRemoteObject {
 
             st.setDouble(1, coordenadas.getLongitud());
             st.setDouble(2, coordenadas.getLatitud());
-            st.setInt(3, tipoPeticion);
+            st.setInt(3, Constants.PETITION_CURRENT);
 
             ResultSet rs = st.executeQuery();
             rs.next();
@@ -548,19 +559,17 @@ public class GestionDB extends UnicastRemoteObject {
     /**
      * Obtener las condiciones meteorologicas a partir de unos datos y una ciudad concreta.
      *
-     * @param fechaCondicion Fecha de las condiciones deseadas.
      * @param idCiudad       Identificador de la ciudad de las ondiciones.
-     * @param tipoPeticion   Tipo de peticion [1 - current; 0 - forecast]
      * @return Las condiciones meteorologicas deseadas.
      */
-    public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, long idCiudad, int tipoPeticion) {
+    public CondicionesMeteorologicas getCondicionesMeteorologicas(long idCiudad) {
         try {
             Connection connection = connect();
             String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE idCiudad = ? and tipoPeticion = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setLong(1, idCiudad);
-            st.setInt(2, tipoPeticion);
+            st.setInt(2, Constants.PETITION_CURRENT);
             CondicionesMeteorologicas condicionesMeteorologicas = null;
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
@@ -586,10 +595,9 @@ public class GestionDB extends UnicastRemoteObject {
      *
      * @param condicionesMeteorologicas Condiciones meteorologicas nuevas para ser guardadas.
      * @param idCiudad                  Identificador de la ciudad de las condiciones guardadas y de las nuevas.
-     * @param tipoPeticion              Tipo de la peticion.
      * @return True si se ha modificado correctamente, false en caso contrario.
      */
-    public boolean modifyCondicionesMeteorologicas(CondicionesMeteorologicas condicionesMeteorologicas, long idCiudad, int tipoPeticion) {
+    public boolean modifyCondicionesMeteorologicas(CondicionesMeteorologicas condicionesMeteorologicas, long idCiudad) {
         try {
             Connection connection = connect();
             String sentence = "UPDATE CondicionesMeteorologicas SET " +
@@ -612,7 +620,7 @@ public class GestionDB extends UnicastRemoteObject {
             st.setDouble(12, condicionesMeteorologicas.getHumedad());
             st.setLong(13, condicionesMeteorologicas.getFechaCondiciones().getTimeInMillis());
             st.setLong(14, condicionesMeteorologicas.getFechaPeticion().getTimeInMillis());
-            st.setInt(15, tipoPeticion);
+            st.setInt(15, Constants.PETITION_CURRENT);
 
             st.executeUpdate();
             connection.close();
@@ -632,10 +640,9 @@ public class GestionDB extends UnicastRemoteObject {
      *
      * @param condicionesMeteorologicas Condiciones meteorologicas nuevas para ser guardadas.
      * @param coordenadas               Coordenadas de las condiciones meteorologicas guardadas y las neuvas.
-     * @param tipoPeticion              Tipo de la peticion.
      * @return
      */
-    public boolean modifyCondicionesMeteorologicas(CondicionesMeteorologicas condicionesMeteorologicas, Coordenadas coordenadas, int tipoPeticion) {
+    public boolean modifyCondicionesMeteorologicas(CondicionesMeteorologicas condicionesMeteorologicas, Coordenadas coordenadas) {
         try {
             Connection connection = connect();
             String sentence = "UPDATE CondicionesMeteorologicas SET " +
@@ -658,7 +665,7 @@ public class GestionDB extends UnicastRemoteObject {
             st.setDouble(12, condicionesMeteorologicas.getHumedad());
             st.setLong(13, condicionesMeteorologicas.getFechaCondiciones().getTimeInMillis());
             st.setLong(14, condicionesMeteorologicas.getFechaPeticion().getTimeInMillis());
-            st.setInt(15, tipoPeticion);
+            st.setInt(15, Constants.PETITION_CURRENT);
 
             st.executeUpdate();
             connection.close();
@@ -683,12 +690,12 @@ public class GestionDB extends UnicastRemoteObject {
         try {
             List<CondicionesMeteorologicas> prediccion = new ArrayList<>();
             Connection connection = connect();
-            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE latitud = ? AND longitud = ? AND tipoPeticion = ? ORDER BY fechaPeticion DESC LIMIT 5";
+            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE latitud = ? AND longitud = ? AND tipoPeticion = ? ORDER BY fechaCondiciones DESC LIMIT 6";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, coordenadas.getLatitud());
             st.setDouble(2, coordenadas.getLongitud());
-            st.setInt(3, 0);
+            st.setInt(3, Constants.PETITION_PREDICTION);
 
             ResultSet rs = st.executeQuery();
             CondicionesMeteorologicas condicionesMeteorologicas;
@@ -724,7 +731,7 @@ public class GestionDB extends UnicastRemoteObject {
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, idCiudad);
-            st.setInt(2, 0);
+            st.setInt(2, Constants.PETITION_PREDICTION);
 
             ResultSet rs = st.executeQuery();
             CondicionesMeteorologicas condicionesMeteorologicas;
