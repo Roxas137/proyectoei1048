@@ -294,7 +294,7 @@ public class GestionDB extends UnicastRemoteObject {
     public boolean modificarLugarFavorito(double antiguaLongitud, double antiguaLatitud, double nuevaLongitud, double nuevaLatitud, String nuevaEtiqueta){
         try{
             Connection connection = connect();
-            String sentence = "UPDATE LugarFavorito SET longitud = ?, latitud = ?, etiqueta = ? WHERE longitud = ? AND latitud = ?";
+            String sentence = "UPDATE LugaresFavoritos SET longitud = ?, latitud = ?, etiqueta = ? WHERE longitud = ? AND latitud = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, nuevaLongitud);
@@ -309,6 +309,7 @@ public class GestionDB extends UnicastRemoteObject {
             return true;
         }catch (SQLException e){
             System.out.println("Las coordenadas otorgadas no corresponden con ningun lugar favorito.");
+            e.printStackTrace();
             return false;
         }catch (NullPointerException e){
             System.out.println("Ha ocurrido un error en la conexion con la base de datos.");
@@ -326,7 +327,7 @@ public class GestionDB extends UnicastRemoteObject {
     public boolean modificarLugarFavorito(long antiguoIdCiudad, long nuevoIdCiudad, String nuevaEtiqueta){
         try{
             Connection connection = connect();
-            String sentence = "UPDATE LugarFavorito SET idCiudad = ?, etiqueta = ? WHERE idCiudad = ?";
+            String sentence = "UPDATE LugaresFavoritos SET idCiudad = ?, etiqueta = ? WHERE idCiudad = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setLong(1, nuevoIdCiudad);
@@ -339,7 +340,8 @@ public class GestionDB extends UnicastRemoteObject {
             System.out.println("Lugar favorito modificado correctamente.");
             return true;
         }catch (SQLException e){
-            System.out.println("Las coordenadas otorgadas no corresponden con ningun lugar favorito.");
+            System.out.println("El id de la ciudad otorgado no corresponden con ningun lugar favorito.");
+            e.printStackTrace();
             return false;
         }catch (NullPointerException e){
             System.out.println("Ha ocurrido un error en la conexion con la base de datos.");
@@ -355,7 +357,7 @@ public class GestionDB extends UnicastRemoteObject {
         try{
             List<LugarFavorito> result = new ArrayList<>();
             Connection connection = connect();
-            String sentence = "SELECT etiqueta, latitud, longitud, idCiudad FROM LugarFavorito";
+            String sentence = "SELECT etiqueta, latitud, longitud, idCiudad FROM LugaresFavoritos";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             ResultSet rs = st.executeQuery();

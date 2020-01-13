@@ -1,5 +1,6 @@
 package e2e;
 
+import es.uji.ei1048.object.LugarFavorito;
 import org.junit.Before;
 import org.junit.Test;
 import es.uji.ei1048.gestionDB.GestionDB;
@@ -100,5 +101,11 @@ public class E2ELugaresFavoritos extends E2ETestBed {
         }
 
         assertTrue(gestionDB.eliminaLugarFavorito(idCiudad));
+    }
+
+    @Test
+    public void getLugaresFavoritos(){
+        List<LugarFavorito> lugares = gestionDB.getLugaresFavoritos();
+        System.out.println(lugares.size());
     }
 }
