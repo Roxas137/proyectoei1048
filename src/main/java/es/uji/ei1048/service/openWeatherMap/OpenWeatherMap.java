@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 public class OpenWeatherMap implements IWeatherService {
@@ -25,6 +26,11 @@ public class OpenWeatherMap implements IWeatherService {
 
     public OpenWeatherMap(){
         cities = CityListReader.initialize();
+    }
+
+    @Override
+    public Map<Long, String> getCities() {
+        return cities;
     }
 
     @Override

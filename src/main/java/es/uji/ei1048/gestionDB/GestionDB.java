@@ -3,7 +3,6 @@ package es.uji.ei1048.gestionDB;
 import es.uji.ei1048.object.CondicionesMeteorologicas;
 import es.uji.ei1048.object.Coordenadas;
 import es.uji.ei1048.object.LugarFavorito;
-import jdk.nashorn.internal.objects.NativeUint8Array;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -13,23 +12,25 @@ import java.util.Calendar;
 import java.util.List;
 
 public class GestionDB extends UnicastRemoteObject {
-    public GestionDB() throws RemoteException {}
+    public GestionDB() throws RemoteException {
+    }
 
     /**
      * Se realiza una conexion con la base de datos.
+     *
      * @return Devuelve la conexion establecida.
      */
-    private Connection connect(){
-        try{
+    private Connection connect() {
+        try {
             Class.forName("org.sqlite.JDBC");
             Connection connection = DriverManager.getConnection("jdbc:sqlite:ei1048.db");
 
             return connection;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("There was an error connecting to Database");
             e.printStackTrace();
             return null;
-        }catch (ClassNotFoundException e){
+        } catch (ClassNotFoundException e) {
             System.out.println("Class [org.sqlite.JDBC] not found.");
 
             return null;
@@ -39,13 +40,14 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Permite registrar unas coordenadas en la base de datos bajo una etiqueta.
+     *
      * @param longitud Longitud de las coordenadas a registrar.
-     * @param latitud Latitud de las coordenadas a registrar.
+     * @param latitud  Latitud de las coordenadas a registrar.
      * @param etiqueta Etiqueta asociada a las coordenadas.
      * @return Devuelve true en el caso de que se registren de forma correcta y false en caso contrario.
      */
-    public boolean registrarCoordenadas(double longitud, double latitud, String etiqueta){
-        try{
+    public boolean registrarCoordenadas(double longitud, double latitud, String etiqueta) {
+        try {
             Connection connection = connect();
             String sentence = "INSERT INTO Coordenadas(longitud, latitud, etiqueta) VALUES(?, ?, ?)";
             PreparedStatement st = connection.prepareStatement(sentence);
@@ -58,10 +60,10 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
             System.out.println("Coordenadas registradas correctamente en la base de datos.");
             return true;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Las coordenadas otorgadas ya existian en la base de datos.");
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha habido un error al conectarse con la base de datos.");
             return false;
         }
@@ -69,11 +71,12 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Permite eliminar unas coordenadas de la base de datos.
+     *
      * @param longitud Longitud de las coordenadas a borrar.
-     * @param latitud Latitud de las coordenadas a borrar.
+     * @param latitud  Latitud de las coordenadas a borrar.
      * @return Devuelve true en el caso de que se borren de forma correcta y false en caso contrario.
      */
-    public boolean eliminarCoordenadas(double longitud, double latitud){
+    public boolean eliminarCoordenadas(double longitud, double latitud) {
         try {
             Connection connection = connect();
             String sentence = "DELETE FROM Coordenadas WHERE longitud = ? AND latitud = ?";
@@ -89,7 +92,7 @@ public class GestionDB extends UnicastRemoteObject {
         } catch (SQLException e) {
             System.out.println("Las coordenadas indicadas no coinciden con ningunas coordenadas registradas.");
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha ocurrido un error al conectarse con la base de datos.");
             return false;
         }
@@ -97,15 +100,16 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Permite modificar unas coordenadas guardadas en la base de datos.
+     *
      * @param antiguaLongitud Longitud de las coordenadas a modificar.
-     * @param antiguaLatitud Latitud de las coordenadas a modificar.
-     * @param nuevaLongitud Nueva longitud de las coordenadas.
-     * @param nuevaLatitud Nueva latitud de las coordenadas.
-     * @param nuevaEtiqueta Nueva etiqueta de las coordenadas.
+     * @param antiguaLatitud  Latitud de las coordenadas a modificar.
+     * @param nuevaLongitud   Nueva longitud de las coordenadas.
+     * @param nuevaLatitud    Nueva latitud de las coordenadas.
+     * @param nuevaEtiqueta   Nueva etiqueta de las coordenadas.
      * @return Devuelve true en el caso de que se modifiquen de forma correcta y false en caso contrario.
      */
-    public boolean modificarCoordenadas(double antiguaLongitud, double antiguaLatitud, double nuevaLongitud, double nuevaLatitud, String nuevaEtiqueta){
-        try{
+    public boolean modificarCoordenadas(double antiguaLongitud, double antiguaLatitud, double nuevaLongitud, double nuevaLatitud, String nuevaEtiqueta) {
+        try {
             Connection connection = connect();
             String sentence = "UPDATE Coordenadas SET longitud = ?, latitud = ?, etiqueta = ? WHERE longitud = ? AND latitud = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
@@ -120,10 +124,10 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
             System.out.println("Lugar favorito modificado correctamente.");
             return true;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Las coordenadas otorgadas no corresponden con ningun lugar favorito.");
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha ocurrido un error en la conexion con la base de datos.");
             return false;
         }
@@ -131,10 +135,11 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Obtiene un listado con todas las coordenadas que esten registradas en la base de datos.
+     *
      * @return Listado de las coordenadas registradas bajo una etiqueta.
      */
-    public List<Coordenadas> getCoordenadasRegistradas(){
-        try{
+    public List<Coordenadas> getCoordenadasRegistradas() {
+        try {
             Connection connection = connect();
             String sentence = "SELECT * FROM Coordenadas";
             PreparedStatement st = connection.prepareStatement(sentence);
@@ -143,7 +148,7 @@ public class GestionDB extends UnicastRemoteObject {
             Coordenadas coordenadas = new Coordenadas();
             List<Coordenadas> result = new ArrayList<>();
 
-            while(rs.next()){
+            while (rs.next()) {
                 coordenadas.setLongitud(rs.getDouble("longitud"));
                 coordenadas.setLatitud(rs.getDouble("latitud"));
                 coordenadas.setEtiqueta("etiqueta");
@@ -154,10 +159,10 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
             System.out.println("Coordenadas obtenidas correctamente de la base de datos.");
             return result;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("No existe ninguna coordenada.");
             return new ArrayList<>();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha habido un error al conectarse con la base de datos.");
             return new ArrayList<>();
         }
@@ -165,11 +170,12 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Registra una ciudad (mediante su identificador) como lugar favorito en la bbdd
+     *
      * @param idCiudad Identificador de la ciudad que se quiere registrar.
      * @param etiqueta Etiqueta puesta al lugar favorito. Puede estar vacia.
      * @return Devuelve true en el caso de que se registre de forma correcta y false en caso contrario.
      */
-    public boolean registrarLugarFavorito(Long idCiudad, String etiqueta){
+    public boolean registrarLugarFavorito(Long idCiudad, String etiqueta) {
         try {
             Connection connection = connect();
 
@@ -185,10 +191,10 @@ public class GestionDB extends UnicastRemoteObject {
             System.out.println("Lugar favorito registrado correctamente.");
             connection.close();
             return true;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Ha ocurrido un error al registrar una ciudad como lugar favorito.");
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha habido algun error en la conexion con la base de datos. NullPointerException.");
             return false;
         }
@@ -196,12 +202,13 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Registra unas coordenadas como lugar favorito en la bbdd
+     *
      * @param longitud Longitud de las coordenadas.
-     * @param latitud Latitud de las coordenadas.
+     * @param latitud  Latitud de las coordenadas.
      * @param etiqueta Etiqueta puesta al lugar favorito. Puede estar vacia.
      * @return Devuelve true en el caso de que se registre de forma correcta y false en caso contrario.
      */
-    public boolean registrarLugarFavorito(double longitud, double latitud, String etiqueta){
+    public boolean registrarLugarFavorito(double longitud, double latitud, String etiqueta) {
 
         try {
             Connection connection = connect();
@@ -218,11 +225,11 @@ public class GestionDB extends UnicastRemoteObject {
             System.out.println("Lugar favorito registrado correctamente.");
             connection.close();
             return true;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Ha ocurrido un error al registrar unas coordenadas como lugar favorito.");
             e.printStackTrace();
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha habido algun error en la conexion con la base de datos.");
             return false;
         }
@@ -230,11 +237,12 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Permite eliminar un lugar favorito de la base de datos.
+     *
      * @param longitud Longitud del lugar favorito a borrar.
-     * @param latitud Latitud del lugar favorito a borrar.
+     * @param latitud  Latitud del lugar favorito a borrar.
      * @return True en caso de que se haya completado correctamente el borrado, false en caso contrario.
      */
-    public boolean eliminaLugarFavorito(double longitud, double latitud){
+    public boolean eliminaLugarFavorito(double longitud, double latitud) {
         try {
             Connection connection = connect();
             String sentence = "DELETE FROM LugaresFavoritos WHERE longitud = ? AND latitud = ?";
@@ -250,7 +258,7 @@ public class GestionDB extends UnicastRemoteObject {
         } catch (SQLException e) {
             System.out.println("Las coordenadas indicadas no coinciden con ningun lugar favorito.");
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha ocurrido un error al conectarse con la base de datos.");
             return false;
         }
@@ -258,11 +266,12 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Permite eliminar un lugar favorito de la base de datos.
+     *
      * @param idCiudad Identificador de la ciudad a borrar.
      * @return True en caso de que se haya completado correctamente el borrado, false en caso contrario.
      */
-    public boolean eliminaLugarFavorito(long idCiudad){
-        try{
+    public boolean eliminaLugarFavorito(long idCiudad) {
+        try {
             Connection connection = connect();
             String sentence = "DELETE FROM LugaresFavoritos WHERE idCiudad = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
@@ -273,10 +282,10 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
             System.out.println("El lugar favorito ha sido borrado con exito.");
             return true;
-        }catch(SQLException e){
+        } catch (SQLException e) {
             System.out.println("EL identificador de la ciudad no corresponde con ningun lugar favorito.");
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha ocurrido un error al conectarse con la base de datos.");
             return false;
         }
@@ -284,15 +293,16 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Permite modificar el lugar favorito.
+     *
      * @param antiguaLongitud Longitud del lugar favorito a modificar.
-     * @param antiguaLatitud Latitud del lugar favorito a modificar.
-     * @param nuevaLongitud Longitud del nuevo lugar favorito.
-     * @param nuevaLatitud Latitud del nuevo lugar favorito.
-     * @param nuevaEtiqueta Nueva etiqueta del lugar favorito.
+     * @param antiguaLatitud  Latitud del lugar favorito a modificar.
+     * @param nuevaLongitud   Longitud del nuevo lugar favorito.
+     * @param nuevaLatitud    Latitud del nuevo lugar favorito.
+     * @param nuevaEtiqueta   Nueva etiqueta del lugar favorito.
      * @return True en caso de que se haya completado correctamente la modificacion, false en caso contrario.
      */
-    public boolean modificarLugarFavorito(double antiguaLongitud, double antiguaLatitud, double nuevaLongitud, double nuevaLatitud, String nuevaEtiqueta){
-        try{
+    public boolean modificarLugarFavorito(double antiguaLongitud, double antiguaLatitud, double nuevaLongitud, double nuevaLatitud, String nuevaEtiqueta) {
+        try {
             Connection connection = connect();
             String sentence = "UPDATE LugaresFavoritos SET longitud = ?, latitud = ?, etiqueta = ? WHERE longitud = ? AND latitud = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
@@ -307,11 +317,11 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
             System.out.println("Lugar favorito modificado correctamente.");
             return true;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Las coordenadas otorgadas no corresponden con ningun lugar favorito.");
             e.printStackTrace();
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha ocurrido un error en la conexion con la base de datos.");
             return false;
         }
@@ -319,13 +329,14 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Permite modificar el lugar favorito.
+     *
      * @param antiguoIdCiudad Identificador de la ciudad a modificar.
-     * @param nuevoIdCiudad Identificador de la nueva ciudad.
-     * @param nuevaEtiqueta Nueva etiqueta del lugar favorito.
+     * @param nuevoIdCiudad   Identificador de la nueva ciudad.
+     * @param nuevaEtiqueta   Nueva etiqueta del lugar favorito.
      * @return True en caso de que se haya completado correctamente la modificacion, false en caso contrario.
      */
-    public boolean modificarLugarFavorito(long antiguoIdCiudad, long nuevoIdCiudad, String nuevaEtiqueta){
-        try{
+    public boolean modificarLugarFavorito(long antiguoIdCiudad, long nuevoIdCiudad, String nuevaEtiqueta) {
+        try {
             Connection connection = connect();
             String sentence = "UPDATE LugaresFavoritos SET idCiudad = ?, etiqueta = ? WHERE idCiudad = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
@@ -339,11 +350,11 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
             System.out.println("Lugar favorito modificado correctamente.");
             return true;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("El id de la ciudad otorgado no corresponden con ningun lugar favorito.");
             e.printStackTrace();
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha ocurrido un error en la conexion con la base de datos.");
             return false;
         }
@@ -351,10 +362,11 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Obtiene un listado de los lugares favoritos registrados en la base de datos.
+     *
      * @return El listado de lugares favoritos.
      */
     public List<LugarFavorito> getLugaresFavoritos() {
-        try{
+        try {
             List<LugarFavorito> result = new ArrayList<>();
             Connection connection = connect();
             String sentence = "SELECT etiqueta, latitud, longitud, idCiudad FROM LugaresFavoritos";
@@ -363,7 +375,7 @@ public class GestionDB extends UnicastRemoteObject {
             ResultSet rs = st.executeQuery();
 
             LugarFavorito lugarFavorito = new LugarFavorito();
-            while (rs.next()){
+            while (rs.next()) {
                 long idCiudad = rs.getLong("idCiudad");
                 double longitud = rs.getDouble("longitud");
                 double latitud = rs.getDouble("latitud");
@@ -382,10 +394,10 @@ public class GestionDB extends UnicastRemoteObject {
             rs.close();
 
             return result;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Ha habido un error al obtener los lugares favoritos.");
             return new ArrayList<>();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha habido algun error en la conexion con la base de datos.");
             return new ArrayList<>();
         }
@@ -393,24 +405,25 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Permite registrar unas condiciones meteorologicas en la base de datos que seran consultadas con posteridad.
+     *
      * @param condiciones Condiciones meteorologicas que se quieren registrar.
      * @param coordenadas Coordenadas de las condiciones meteorologicas a registrar.
      * @return Devuelve true si se registra correctamente y false en caso contrario.
      */
-    public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Coordenadas coordenadas, int tipoPeticion){
-        try{
+    public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Coordenadas coordenadas, int tipoPeticion) {
+        try {
             Connection connection = connect();
             String sentence = "INSERT INTO CondicionesMeteorologicas(" +
-                    "longitud, latitud, idCiudad, temperaturaActual, temperaturaMin, temperaturaMax, estadoClima, velViento" +
+                    "longitud, latitud, idCiudad, temperaturaActual, sensacionTermica, temperaturaMin, temperaturaMax, estadoClima, velViento" +
                     ", dirViento, presion, humedad, fechaCondiciones, fechaPeticion, tipoPeticion)" +
-                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, coordenadas.getLongitud());
             st.setDouble(2, coordenadas.getLatitud());
             st.setLong(3, -500);
             st.setDouble(4, condiciones.getTemperaturaActual());
-            st.setDouble(5,condiciones.getSensacionTermica());
+            st.setDouble(5, condiciones.getSensacionTermica());
             st.setDouble(6, condiciones.getTemperaturaMin());
             st.setDouble(7, condiciones.getTemperaturaMax());
             st.setString(8, condiciones.getEstadoClima());
@@ -428,10 +441,10 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
 
             return true;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Ha ocurrido un error al registrar unas condiciones meteorologicas en la base de datos.");
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha habido algun error en la conexion con la base de datos.");
             return false;
         }
@@ -439,34 +452,45 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Permite registrar unas condiciones meteorologicas en la base de datos que seran consultadas con posteridad.
+     *
      * @param condiciones Condiciones meteorologicas que se quieren registrar.
-     * @param idCiudad Identificador de la ciudad de las condiciones meteorologicas a registrar.
+     * @param idCiudad    Identificador de la ciudad de las condiciones meteorologicas a registrar.
      * @return Devuelve true si se registra correctamente y false en caso contrario.
      */
-    public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion){
-        try{
+    public boolean registrarCondicionesMeteorologicas(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion) {
+        try {
             Connection connection = connect();
-            String sentence = "INSERT INTO CondicionesMeteorologicas(" +
-                    "longitud, latitud, idCiudad, temperaturaActual, temperaturaMin, temperaturaMax, estadoClima, velViento" +
-                    ", dirViento, presion, humedad, fechaCondiciones, fechaPeticion, tipoPeticion)" +
-                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sentence;
+            if (tipoPeticion == 1) {
+                sentence = "INSERT INTO CondicionesMeteorologicas(" +
+                        "longitud, latitud, idCiudad, temperaturaActual, temperaturaMin, temperaturaMax, estadoClima, velViento" +
+                        ", dirViento, presion, humedad, fechaCondiciones, fechaPeticion, tipoPeticion, sensacionTermica)" +
+                        " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            } else {
+                sentence = "INSERT INTO CondicionesMeteorologicas(" +
+                        "longitud, latitud, idCiudad, temperaturaActual, temperaturaMin, temperaturaMax, estadoClima, velViento" +
+                        ", dirViento, presion, humedad, fechaCondiciones, fechaPeticion, tipoPeticion)" +
+                        " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            }
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, -500);
             st.setDouble(2, -500);
             st.setLong(3, idCiudad);
             st.setDouble(4, condiciones.getTemperaturaActual());
-            st.setDouble(5,condiciones.getSensacionTermica());
-            st.setDouble(6, condiciones.getTemperaturaMin());
-            st.setDouble(7, condiciones.getTemperaturaMax());
-            st.setString(8, condiciones.getEstadoClima());
-            st.setDouble(9, condiciones.getVelViento());
-            st.setDouble(10, condiciones.getDirViento());
-            st.setDouble(11, condiciones.getPresion());
-            st.setDouble(12, condiciones.getHumedad());
-            st.setLong(13, condiciones.getFechaCondiciones().getTimeInMillis());
-            st.setLong(14, condiciones.getFechaPeticion().getTimeInMillis());
-            st.setInt(15, tipoPeticion);
+            st.setDouble(5, condiciones.getTemperaturaMin());
+            st.setDouble(6, condiciones.getTemperaturaMax());
+            st.setString(7, condiciones.getEstadoClima());
+            st.setDouble(8, condiciones.getVelViento());
+            st.setDouble(9, condiciones.getDirViento());
+            st.setDouble(10, condiciones.getPresion());
+            st.setDouble(11, condiciones.getHumedad());
+            st.setLong(12, condiciones.getFechaCondiciones().getTimeInMillis());
+            st.setLong(13, condiciones.getFechaPeticion().getTimeInMillis());
+            st.setInt(14, tipoPeticion);
+            if (tipoPeticion == 1) {
+                st.setDouble(15, condiciones.getSensacionTermica());
+            }
 
             st.executeUpdate();
 
@@ -474,10 +498,12 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
 
             return true;
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            e.printStackTrace();
             System.out.println("Ha ocurrido un error al registrar unas condiciones meteorologicas en la base de datos.");
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
+            e.printStackTrace();
             System.out.println("Ha habido algun error en la conexion con la base de datos.");
             return false;
         }
@@ -487,33 +513,33 @@ public class GestionDB extends UnicastRemoteObject {
      * Obtener las condicciones meteorologicas a partir de unos datos y coordenadas concretas.
      *
      * @param fechaCondicion Fecha de las condiciones deseadas.
-     * @param coordenadas Localizacion de las condiciones.
-     * @param tipoPeticion Tipo de peticion [1 - current; 0 - forecast]
+     * @param coordenadas    Localizacion de las condiciones.
+     * @param tipoPeticion   Tipo de peticion [1 - current; 0 - forecast]
      * @return Las condiciones meteorologicas deseadas.
      */
-    public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, Coordenadas coordenadas, int tipoPeticion){
-        try{
+    public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, Coordenadas coordenadas, int tipoPeticion) {
+        try {
             Connection connection = connect();
-            String sentence = "SELECT * FROM CondicionesMeteorlogicas WHERE longitud = ? and latitud = ? and fechaCondiciones = ? and tipoPeticion = ?";
+            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE longitud = ? and latitud = ? and tipoPeticion = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, coordenadas.getLongitud());
             st.setDouble(2, coordenadas.getLatitud());
-            st.setLong(3, fechaCondicion.getTimeInMillis());
-            st.setInt(4, tipoPeticion);
+            st.setInt(3, tipoPeticion);
 
             ResultSet rs = st.executeQuery();
+            rs.next();
             CondicionesMeteorologicas condicionesMeteorologicas = toCondicionMeteorologica(rs);
 
             System.out.println("Condiciones meteorologicas obtenidas correctamente.");
-            connection.close();
             rs.close();
+            connection.close();
 
             return condicionesMeteorologicas;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Ha habido algun error al obtener las condiciones meteorologicas de la base de datos.");
             return null;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("He habido algun error al conectarse a la base de datos.");
             return null;
         }
@@ -523,34 +549,127 @@ public class GestionDB extends UnicastRemoteObject {
      * Obtener las condiciones meteorologicas a partir de unos datos y una ciudad concreta.
      *
      * @param fechaCondicion Fecha de las condiciones deseadas.
-     * @param idCiudad Identificador de la ciudad de las ondiciones.
-     * @param tipoPeticion Tipo de peticion [1 - current; 0 - forecast]
+     * @param idCiudad       Identificador de la ciudad de las ondiciones.
+     * @param tipoPeticion   Tipo de peticion [1 - current; 0 - forecast]
      * @return Las condiciones meteorologicas deseadas.
      */
-    public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, long idCiudad, int tipoPeticion){
-        try{
+    public CondicionesMeteorologicas getCondicionesMeteorologicas(Calendar fechaCondicion, long idCiudad, int tipoPeticion) {
+        try {
             Connection connection = connect();
-            String sentence = "SELECT * FROM CondicionesMeteorlogicas WHERE idCiudad = ? and fechaCondiciones = ? and tipoPeticion = ?";
+            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE idCiudad = ? and tipoPeticion = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setLong(1, idCiudad);
-            st.setLong(3, fechaCondicion.getTimeInMillis());
-            st.setInt(3, tipoPeticion);
-
+            st.setInt(2, tipoPeticion);
+            CondicionesMeteorologicas condicionesMeteorologicas = null;
             ResultSet rs = st.executeQuery();
-            CondicionesMeteorologicas condicionesMeteorologicas = toCondicionMeteorologica(rs);
-
+            if (rs.next()) {
+                condicionesMeteorologicas = toCondicionMeteorologica(rs);
+            }
+            System.out.println(condicionesMeteorologicas.getFechaCondiciones().toString());
             System.out.println("Condiciones meteorologicas obtenidas correctamente.");
-            connection.close();
             rs.close();
+            connection.close();
 
             return condicionesMeteorologicas;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Ha habido algun error al obtener las condiciones meteorologicas de la base de datos.");
             return null;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("He habido algun error al conectarse a la base de datos.");
             return null;
+        }
+    }
+
+    /**
+     * Permite modificar unas condiciones meteorologicas ya registradas previamente.
+     *
+     * @param condicionesMeteorologicas Condiciones meteorologicas nuevas para ser guardadas.
+     * @param idCiudad                  Identificador de la ciudad de las condiciones guardadas y de las nuevas.
+     * @param tipoPeticion              Tipo de la peticion.
+     * @return True si se ha modificado correctamente, false en caso contrario.
+     */
+    public boolean modifyCondicionesMeteorologicas(CondicionesMeteorologicas condicionesMeteorologicas, long idCiudad, int tipoPeticion) {
+        try {
+            Connection connection = connect();
+            String sentence = "UPDATE CondicionesMeteorologicas SET " +
+                    "longitud = ?, latitud = ?, idCiudad = ?, temperaturaActual = ?, sensacionTermica = ?, temperaturaMin = ?," +
+                    " temperaturaMax = ?, estadoClima = ?, velViento = ?, dirViento = ?, presion = ?, humedad = ?, fechaCondiciones = ?," +
+                    " fechaPeticion = ?, tipoPeticion = ? WHERE idCiudad = ? and tipoPeticion = ?";
+            PreparedStatement st = connection.prepareStatement(sentence);
+
+            st.setDouble(1, -500);
+            st.setDouble(2, -500);
+            st.setLong(3, idCiudad);
+            st.setDouble(4, condicionesMeteorologicas.getTemperaturaActual());
+            st.setDouble(5, condicionesMeteorologicas.getSensacionTermica());
+            st.setDouble(6, condicionesMeteorologicas.getTemperaturaMin());
+            st.setDouble(7, condicionesMeteorologicas.getTemperaturaMax());
+            st.setString(8, condicionesMeteorologicas.getEstadoClima());
+            st.setDouble(9, condicionesMeteorologicas.getVelViento());
+            st.setDouble(10, condicionesMeteorologicas.getDirViento());
+            st.setDouble(11, condicionesMeteorologicas.getPresion());
+            st.setDouble(12, condicionesMeteorologicas.getHumedad());
+            st.setLong(13, condicionesMeteorologicas.getFechaCondiciones().getTimeInMillis());
+            st.setLong(14, condicionesMeteorologicas.getFechaPeticion().getTimeInMillis());
+            st.setInt(15, tipoPeticion);
+
+            st.executeUpdate();
+            connection.close();
+            System.out.println("Condiciones modificadas existosamente.");
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Ha habido un error al modificar las condiciones meteorologicas mediante el id de la ciudad.\n " + e.getMessage());
+            return false;
+        } catch (NullPointerException e) {
+            System.out.println("Ha habido un error en la conexcion con la base de datos.\n" + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Permite modificar unas condiciones meteorologicas ya registradas previamente.
+     *
+     * @param condicionesMeteorologicas Condiciones meteorologicas nuevas para ser guardadas.
+     * @param coordenadas               Coordenadas de las condiciones meteorologicas guardadas y las neuvas.
+     * @param tipoPeticion              Tipo de la peticion.
+     * @return
+     */
+    public boolean modifyCondicionesMeteorologicas(CondicionesMeteorologicas condicionesMeteorologicas, Coordenadas coordenadas, int tipoPeticion) {
+        try {
+            Connection connection = connect();
+            String sentence = "UPDATE CondicionesMeteorologicas SET " +
+                    "longitud = ?, latitud = ?, idCiudad = ?, temperaturaActual = ?, sensacionTermica = ?, temperaturaMin = ?," +
+                    " temperaturaMax = ?, estadoClima = ?, velViento = ?, dirViento = ?, presion = ?, humedad = ?, fechaCondiciones = ?," +
+                    " fechaPeticion = ?, tipoPeticion = ? WHERE idCiudad = ? and tipoPeticion = ?";
+            PreparedStatement st = connection.prepareStatement(sentence);
+
+            st.setDouble(1, coordenadas.getLongitud());
+            st.setDouble(2, coordenadas.getLatitud());
+            st.setLong(3, -500);
+            st.setDouble(4, condicionesMeteorologicas.getTemperaturaActual());
+            st.setDouble(5, condicionesMeteorologicas.getSensacionTermica());
+            st.setDouble(6, condicionesMeteorologicas.getTemperaturaMin());
+            st.setDouble(7, condicionesMeteorologicas.getTemperaturaMax());
+            st.setString(8, condicionesMeteorologicas.getEstadoClima());
+            st.setDouble(9, condicionesMeteorologicas.getVelViento());
+            st.setDouble(10, condicionesMeteorologicas.getDirViento());
+            st.setDouble(11, condicionesMeteorologicas.getPresion());
+            st.setDouble(12, condicionesMeteorologicas.getHumedad());
+            st.setLong(13, condicionesMeteorologicas.getFechaCondiciones().getTimeInMillis());
+            st.setLong(14, condicionesMeteorologicas.getFechaPeticion().getTimeInMillis());
+            st.setInt(15, tipoPeticion);
+
+            st.executeUpdate();
+            connection.close();
+            System.out.println("Condiciones modificadas existosamente.");
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Ha habido un error al modificar las condiciones meteorologicas mediante unas coordenadas.\n " + e.getMessage());
+            return false;
+        } catch (NullPointerException e) {
+            System.out.println("Ha habido un error en la conexcion con la base de datos.\n" + e.getMessage());
+            return false;
         }
     }
 
@@ -560,8 +679,8 @@ public class GestionDB extends UnicastRemoteObject {
      * @param coordenadas Coordenadas de la localizacion deseada.
      * @return Listado con las condiciones meteorologicas correspondientes.
      */
-    public List<CondicionesMeteorologicas> getPrediccion(Coordenadas coordenadas){
-        try{
+    public List<CondicionesMeteorologicas> getPrediccion(Coordenadas coordenadas) {
+        try {
             List<CondicionesMeteorologicas> prediccion = new ArrayList<>();
             Connection connection = connect();
             String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE latitud = ? AND longitud = ? AND tipoPeticion = ? ORDER BY fechaPeticion DESC LIMIT 5";
@@ -582,10 +701,10 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
             rs.close();
             return prediccion;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Ha habido un error al obtener la prediccion de la base de datos.");
             return new ArrayList<>();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha habido un error al conectarse a la base de datos.");
             return new ArrayList<>();
         }
@@ -597,11 +716,11 @@ public class GestionDB extends UnicastRemoteObject {
      * @param idCiudad Ciudad deseada.
      * @return Listado con la prediccion.
      */
-    public List<CondicionesMeteorologicas> getPrediccion(long idCiudad){
-        try{
+    public List<CondicionesMeteorologicas> getPrediccion(long idCiudad) {
+        try {
             List<CondicionesMeteorologicas> prediccion = new ArrayList<>();
             Connection connection = connect();
-            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE idCiudad = ? AND tipoPeticion = ? ORDER BY fechaPeticion DESC LIMIT 5";
+            String sentence = "SELECT * FROM CondicionesMeteorologicas WHERE idCiudad = ? AND tipoPeticion = ? ORDER BY fechaCondiciones DESC LIMIT 6";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, idCiudad);
@@ -615,13 +734,15 @@ public class GestionDB extends UnicastRemoteObject {
                 prediccion.add(condicionesMeteorologicas);
             }
 
+            System.out.println("Predicciones obtenidas correctamente");
+
             connection.close();
             rs.close();
             return prediccion;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Ha habido un error al obtener la prediccion de la base de datos.");
             return new ArrayList<>();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha habido un error al conectarse a la base de datos.");
             return new ArrayList<>();
         }
@@ -631,12 +752,12 @@ public class GestionDB extends UnicastRemoteObject {
      * Comprueba si existen unas condiciones determinadas en la base de datos a partir de unas coordenadas.
      *
      * @param fechaCondicion Fecha de las condiciones deseadas.
-     * @param coordenadas Localización de las condiciones meteorlogicas.
-     * @param tipoPeticion Tipo de peticion [1 - current; 0 - forecast]
+     * @param coordenadas    Localización de las condiciones meteorlogicas.
+     * @param tipoPeticion   Tipo de peticion [1 - current; 0 - forecast]
      * @return True si se encuentra alguna condicion a partir de esos datos, false en caso contrario.
      */
-    public boolean checkCondiciones(Calendar fechaCondicion, Coordenadas coordenadas, int tipoPeticion){
-        try{
+    public boolean checkCondiciones(Calendar fechaCondicion, Coordenadas coordenadas, int tipoPeticion) {
+        try {
             Connection connection = connect();
             String sentence = "SELECT COUNT(*) as condicion FROM CondicionesMeteorlogicas WHERE longitud = ? and latitud = ? and fechaCondiciones = ? and tipoPeticion = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
@@ -653,24 +774,23 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
 
             return exists > 0;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Ha habdio algun error al obtener los datos de la base de datos");
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha ocurrido un error al conectarse a la base de datos.");
             return false;
         }
     }
 
     /**
-     *
      * @param fechaCondicion Fecha de las condiciones deseadas.
-     * @param idCiudad Identificador de la ciudad de las ondiciones.
-     * @param tipoPeticion Tipo de peticion [1 - current; 0 - forecast]
+     * @param idCiudad       Identificador de la ciudad de las ondiciones.
+     * @param tipoPeticion   Tipo de peticion [1 - current; 0 - forecast]
      * @return True si se encuentra alguna condicion a partir de esos datos, false en caso contrario.
      */
-    public boolean checkCondiciones(Calendar fechaCondicion, int idCiudad, int tipoPeticion){
-        try{
+    public boolean checkCondiciones(Calendar fechaCondicion, int idCiudad, int tipoPeticion) {
+        try {
             Connection connection = connect();
             String sentence = "SELECT COUNT(*) as condicion FROM CondicionesMeteorlogicas WHERE idCiudad = ? and fechaCondiciones = ? and tipoPeticion = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
@@ -686,10 +806,10 @@ public class GestionDB extends UnicastRemoteObject {
             connection.close();
 
             return exists > 0;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Ha habdio algun error al obtener los datos de la base de datos");
             return false;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("Ha ocurrido un error al conectarse a la base de datos.");
             return false;
         }
@@ -697,6 +817,7 @@ public class GestionDB extends UnicastRemoteObject {
 
     /**
      * Permite obtener transformar la informacion de la base de datos en condiciones meteorologicas.
+     *
      * @param rs ResultSet necesario para obtener los datos de la base de datos.
      * @return La condicion meteorologica.
      * @throws SQLException En el caso de que haya algun error con la base de datos.

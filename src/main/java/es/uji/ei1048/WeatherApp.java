@@ -43,7 +43,11 @@ public class WeatherApp {
 
             String jsonResult = service.getCurrentWeather(OpenWeatherMapTypeId.ID, place, Unit.CELSIUS);
             CondicionesMeteorologicas condiciones = fromJsonToObject(jsonResult);
-            updateDatabase(condiciones, idCiudad, Constants.PETITION_CURRENT, null);
+            if (condicionesGuardadas == null) {
+                insertDatabase(condiciones, idCiudad, Constants.PETITION_CURRENT, null);
+            } else {
+                updateDatabase(condiciones, idCiudad, Constants.PETITION_CURRENT, null);
+            }
             return condiciones;
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,7 +73,11 @@ public class WeatherApp {
 
             String jsonResult = service.getCurrentWeather(OpenWeatherMapTypeId.ID, place, Unit.CELSIUS);
             CondicionesMeteorologicas condiciones = fromJsonToObject(jsonResult);
-            updateDatabase(condiciones, Constants.NULL_CITY, Constants.PETITION_CURRENT, coor);
+            if (condicionesGuardadas == null) {
+                insertDatabase(condiciones, Constants.NULL_CITY, Constants.PETITION_CURRENT, coor);
+            } else {
+                updateDatabase(condiciones, Constants.NULL_CITY, Constants.PETITION_CURRENT, coor);
+            }
             return condiciones;
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,7 +93,7 @@ public class WeatherApp {
             List<CondicionesMeteorologicas> prediccionGuardada;
             prediccionGuardada = gestionDB.getPrediccion(idCiudad);
 
-            if (comparaFechaPeticiones(fechaPeticion, prediccionGuardada.get(0))) {
+            if (prediccionGuardada.size()>0 && comparaFechaPeticiones(fechaPeticion, prediccionGuardada.get(0))) {
                 return prediccionGuardada;
             }
 
@@ -94,7 +102,7 @@ public class WeatherApp {
             setPetitionDate(condiciones);
 
             for (CondicionesMeteorologicas condicion : condiciones) {
-                updateDatabase(condicion, idCiudad, Constants.PETITION_PREDICTION, null);
+                insertDatabase(condicion, idCiudad, Constants.PETITION_PREDICTION, null);
             }
             return condiciones;
         } catch (IOException e) {
@@ -119,7 +127,7 @@ public class WeatherApp {
             setPetitionDate(condiciones);
 
             for (CondicionesMeteorologicas condicion : condiciones) {
-                updateDatabase(condicion, Constants.NULL_CITY, Constants.PETITION_PREDICTION, coor);
+                insertDatabase(condicion, Constants.NULL_CITY, Constants.PETITION_PREDICTION, coor);
             }
             return condiciones;
         } catch (IOException e) {
@@ -289,6 +297,14 @@ public class WeatherApp {
     }
 
     private void updateDatabase(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion, Coordenadas coordenadas) {
+        if (idCiudad.equals(Constants.NULL_CITY)) {
+            gestionDB.modifyCondicionesMeteorologicas(condiciones, coordenadas, tipoPeticion);
+        } else {
+            gestionDB.modifyCondicionesMeteorologicas(condiciones, idCiudad, tipoPeticion);
+        }
+    }
+
+    private void insertDatabase(CondicionesMeteorologicas condiciones, Long idCiudad, int tipoPeticion, Coordenadas coordenadas) {
         if (idCiudad.equals(Constants.NULL_CITY)) {
             gestionDB.registrarCondicionesMeteorologicas(condiciones, coordenadas, tipoPeticion);
         } else {

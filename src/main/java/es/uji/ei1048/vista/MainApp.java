@@ -29,7 +29,7 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         // Preparamos la lista de las ciudades
-        Map<Long, String> cities = CityListReader.initialize();
+        Map<Long, String> cities = service.getCities();
         List<String> listadoCiudadesPais = new ArrayList<>();
         for (String cityCountry : cities.values()) {
             listadoCiudadesPais.add(cityCountry.replace("#", ", "));
