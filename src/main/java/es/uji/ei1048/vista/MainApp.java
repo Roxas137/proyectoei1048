@@ -26,11 +26,12 @@ public class MainApp extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
 
+        // Preparamos la lista de las ciudades
         Map<Long, String> cities = CityListReader.initialize();
         List<String> listadoCiudadesPais = new ArrayList<>();
-        for (String cityCountry : cities.values()){
+        for (String cityCountry : cities.values()) {
             listadoCiudadesPais.add(cityCountry.replace("#", ", "));
         }
 
@@ -42,6 +43,7 @@ public class MainApp extends Application {
         System.out.println(landingPage.getLocation());
 
         this.primaryStage.setTitle("My Weather App");
+        this.primaryStage.setResizable(false);
 
         // Cargamos la escena.
         Scene landingScene = new Scene(landingPage.load());

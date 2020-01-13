@@ -14,7 +14,6 @@ Estilos de Label
 }
 
 
-
 /*
 Estilos de TabPane
  */
@@ -33,10 +32,9 @@ Estilos de TabPane
     -fx-border-width: 3;
     -fx-border-radius: 5 5 0 0;
     -fx-background-radius: 5 5 0 0;
-    -fx-background-color: #009DDC;
+    -fx-background-color: #3C3F41;
     -fx-pref-height: 40px;
 }
-
 
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected > .tab-container > .tab-label {
@@ -108,7 +106,7 @@ Estilos de button
 }
 
 .button:default:hover {
-    -fx-background-color: derive(-fx-focus-color,30%);
+    -fx-background-color: derive(-fx-focus-color, 30%);
 }
 
 .choice-box {
