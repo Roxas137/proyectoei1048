@@ -4,6 +4,7 @@ import com.google.gson.*;
 import es.uji.ei1048.gestionDB.GestionDB;
 import es.uji.ei1048.object.CondicionesMeteorologicas;
 import es.uji.ei1048.object.Coordenadas;
+import es.uji.ei1048.object.LugarFavorito;
 import es.uji.ei1048.service.IWeatherService;
 import es.uji.ei1048.service.openWeatherMap.OpenWeatherMapTypeId;
 import es.uji.ei1048.utils.Constants;
@@ -134,6 +135,26 @@ public class WeatherApp {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<LugarFavorito> getLugaresFavoritos(){
+        return gestionDB.getLugaresFavoritos();
+    }
+
+    public boolean registraLugarFavorito(LugarFavorito lugarFavorito){
+        if (lugarFavorito.getIdCiudad() == -500){
+            return gestionDB.registrarLugarFavorito(lugarFavorito.getLongitud(), lugarFavorito.getLatitud(), lugarFavorito.getEtiqueta());
+        }else{
+            return gestionDB.registrarLugarFavorito(lugarFavorito.getIdCiudad(), lugarFavorito.getEtiqueta());
+        }
+    }
+
+    public boolean eliminarLugarFavorito(LugarFavorito lugarFavorito){
+        if(lugarFavorito.getIdCiudad() == -500){
+            return gestionDB.eliminaLugarFavorito(lugarFavorito.getLongitud(), lugarFavorito.getLatitud(), lugarFavorito.getEtiqueta());
+        }else{
+            return gestionDB.eliminaLugarFavorito(lugarFavorito.getIdCiudad(), lugarFavorito.getEtiqueta());
+        }
     }
 
 

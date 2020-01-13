@@ -243,14 +243,15 @@ public class GestionDB extends UnicastRemoteObject {
      * @param latitud  Latitud del lugar favorito a borrar.
      * @return True en caso de que se haya completado correctamente el borrado, false en caso contrario.
      */
-    public boolean eliminaLugarFavorito(double longitud, double latitud) {
+    public boolean eliminaLugarFavorito(double longitud, double latitud, String etiqueta) {
         try {
             Connection connection = connect();
-            String sentence = "DELETE FROM LugaresFavoritos WHERE longitud = ? AND latitud = ?";
+            String sentence = "DELETE FROM LugaresFavoritos WHERE longitud = ? AND latitud = ? AND etiqueta = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, longitud);
             st.setDouble(2, latitud);
+            st.setString(3, etiqueta);
 
             st.executeUpdate();
             connection.close();
@@ -271,13 +272,14 @@ public class GestionDB extends UnicastRemoteObject {
      * @param idCiudad Identificador de la ciudad a borrar.
      * @return True en caso de que se haya completado correctamente el borrado, false en caso contrario.
      */
-    public boolean eliminaLugarFavorito(long idCiudad) {
+    public boolean eliminaLugarFavorito(long idCiudad, String etiqueta) {
         try {
             Connection connection = connect();
-            String sentence = "DELETE FROM LugaresFavoritos WHERE idCiudad = ?";
+            String sentence = "DELETE FROM LugaresFavoritos WHERE idCiudad = ? AND etiqueta = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setLong(1, idCiudad);
+            st.setString(2, etiqueta);
 
             st.executeUpdate();
             connection.close();
@@ -305,7 +307,7 @@ public class GestionDB extends UnicastRemoteObject {
     public boolean modificarLugarFavorito(double antiguaLongitud, double antiguaLatitud, double nuevaLongitud, double nuevaLatitud, String nuevaEtiqueta) {
         try {
             Connection connection = connect();
-            String sentence = "UPDATE LugaresFavoritos SET longitud = ?, latitud = ?, etiqueta = ? WHERE longitud = ? AND latitud = ?";
+            String sentence = "UPDATE LugaresFavoritos SET longitud = ?, latitud = ?, etiqueta = ? WHERE longitud = ? AND latitud = ? AND etiqueta = ?";
             PreparedStatement st = connection.prepareStatement(sentence);
 
             st.setDouble(1, nuevaLongitud);
